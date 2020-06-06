@@ -1,0 +1,51 @@
+Your exam is scheduled for: Jun 25, 2020 - 3:00 PM
+This is a timed, 90-minute exam. Once the timer reaches 0, you will be logged out of the exam and it will be automatically submitted for you.
+There are 60 questions in the exam.
+Questions are True/False and Multiple-Choice
+
+
+
+### Resources:
+
+1. https://cassandra.apache.org/doc/latest/
+2.  DS 101, 201, 210, 220
+3. http://www.doanduyhai.com/blog/?p=2058
+4. http://www.doanduyhai.com/blog/?cat=57
+
+
+
+
+
+### Routine:
+
+1. DataStax Tutorial
+2. DataStax Live Youtbe Training
+3. Tutorial Point Cassandra
+
+
+
+
+### Exam Objectives : There are in total 5 sections and you will be asked total 60 questions in real exam. Please check each section below with regards to the exam objective
+
+Apache Cassandra™ data modeling
+Fundamentals of replication and consistency
+The distributed and internal architecture of Apache Cassandra™
+Installation and configuration
+Basic tooling
+
+
+
+
+
+## Concepts Needed:
+
+1. Cassandra Architecture
+2. Deep Dive into Cassandra Database
+3. Node Operations in a Cluster
+4. Managing and Monitoring the Cluster
+5. Backup & Restore and Performance Tuning
+6. Hosting Cassandra Database on Cloud
+
+
+
+
