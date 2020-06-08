@@ -3,27 +3,16 @@ This is a timed, 90-minute exam. Once the timer reaches 0, you will be logged ou
 There are 60 questions in the exam.
 Questions are True/False and Multiple-Choice
 
-
-
 ### Resources:
-
 1. https://cassandra.apache.org/doc/latest/
 2.  DS 101, 201, 210, 220
 3. http://www.doanduyhai.com/blog/?p=2058
 4. http://www.doanduyhai.com/blog/?cat=57
 
-
-
-
-
 ### Routine:
-
 1. DataStax Tutorial
-2. DataStax Live Youtbe Training
+2. DataStax Live Youtube Training
 3. Tutorial Point Cassandra
-
-
-
 
 ### Exam Objectives : There are in total 5 sections and you will be asked total 60 questions in real exam. Please check each section below with regards to the exam objective
 
@@ -32,10 +21,6 @@ Fundamentals of replication and consistency
 The distributed and internal architecture of Apache Cassandra™
 Installation and configuration
 Basic tooling
-
-
-
-
 
 ## Concepts Needed:
 
@@ -47,5 +32,38 @@ Basic tooling
 6. Hosting Cassandra Database on Cloud
 
 
+*************************************   CASSANDRA IMPORTANT NOTES  *************************************************************
 
+What is Apache Cassandra?
 
+Fast Distributed Database, HA, Linear Scalability, Predictable Performance, No SPOF, Multi-DC, Commodity Hardware, Easy to manage operationally, Not a drop in replacement for RDBMS
+
+## Hash Ring
++ No master / slave / replica sets
++ No config servers, zookeeper
++ Data is partitioned around the ring
++ Data is replicated to RF=N servers
++ All node hold data and can answer queries (both reads & writes)
++ Location of data on ring is determined by partition key
+
+## CAP Tradeoffs
++ Impossible to be both consistent and highly available during a network partition
++ Latency between data centers also makes consistency impractical
++ Cassandra chooses Availability & Partition Tolerance over Consistency
+
+## Replication
++ Data is replicated automatically
++ You pick number of servers
++ Called "replication factor" or RF
++ Data is ALWAYS replicated to each replica
++ If a machine is down, missing data is replayed via hinted handoff
+
+## Consistency Levels
++ Per query consistency
++ ALL, QUORUM, ONE
++ How many replicas for query to respond OK
+
+## Multi DC
++ Typical usage: clients write to local DC, replcated async to other DCs
++ Replication factor per keyspace per datacenter
++ Datacenters can be physical or logical
