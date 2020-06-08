@@ -98,3 +98,16 @@
 
 10. DSE does *not* provide the core of open-source Cassandra
       a. True  b. False
+      
+************************************** SET-3 *******************************
+1. Partitions......
+       a. format data for CQL queries
+       b. maintain a log of all executed queries
+       c. optimize query-time joins keeping frequently queried rows together on disk
+       d. group rows physically together on disk based on the partition key
+       
+ 2. What is the role of the partitioner?
+      a. It organizes the data together physically on disk
+      b. It hashes the partition key values to create a partition token
+      c. It retrieves partition data for a CQL query
+      d. It physically separates rows into equal-sized partitions
