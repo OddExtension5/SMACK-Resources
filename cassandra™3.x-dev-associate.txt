@@ -34,7 +34,7 @@ Basic tooling
 
 *************************************   CASSANDRA IMPORTANT NOTES  *************************************************************
 
-What is Apache Cassandra?
+# What is Apache Cassandra?
 
 Fast Distributed Database, HA, Linear Scalability, Predictable Performance, No SPOF, Multi-DC, Commodity Hardware, Easy to manage operationally, Not a drop in replacement for RDBMS
 
@@ -67,3 +67,103 @@ Fast Distributed Database, HA, Linear Scalability, Predictable Performance, No S
 + Typical usage: clients write to local DC, replcated async to other DCs
 + Replication factor per keyspace per datacenter
 + Datacenters can be physical or logical
+
+## Write Path
++ Writes are written to any node in the cluster (coordinator)
++ Writes are written to commit log, then to memtable
++ Every write includes a timestamp
++ Memtable flushed to disk periodically (SSTable)
++ New memtable is created in memory
++ Deleted are a special write case, called a "tombstone"
+
+## What is an SSTable?
++ Immutable data file for row storage
++ Every wirte includes a timetsamp of when it was written
++ Partition is spread across multiple SSTables
++ Same column can be in multiple SSTables
++ Merged through compaction, only latest timestamp is kept
++ Deleted are written as tombstones
++ Easy backups!
+
+## Read Path
++ Any server may be queried, it acts as the coordinator
++ Contacts nodes with the requested key
++ On each node, data is pulled from SSTables and merged
++ Consistency < ALL performs read repair in background (read_repair_chance)
+
+
+# CQL Fundamentals
+  + Cassandra Query Language (CQL)
+  + Mostly similar to SQL
+  
+## Keyspaces
+  + Top-level namespaces/container
+  + Similar to a relational database schema
+  
+ CREATE KEYSPACE killrvideo
+ WITH REPLICATION = {
+  'class': 'SimpleStrategy'
+  'replication_factor': 1
+ };
+   + Rreplication parameters required
+   
+## USE
+  + USE switches between keyspaces
+  
+ USE killrvideo
+ 
+## Tables
+  + Keypsaces contains tables
+  + Tables contains data
+  + varchar is sames as text
+
+ CREATE TABLE table1 (
+  column1 TEXT,
+  column2 TEXT,
+  column3 INT,
+  PRIMARY KEY (column1)
+ );
+ 
+ CREATE TABLE users (
+  user_id UUID,
+  first_name TEXT,
+  last_name TEXT,
+  PRIMARY KEY (user_id)
+ );
+ 
+## UUID and TIMEUUID
+  + Used in place of integer IDs because Cassandra is a distributed database
+  
+    + Universally Unique Identifier
+      + Ex: 34jfnck43- dkc02- ldmcfj-knjd-knndknw
+      + Generate via uuid()
+      
+     + TIMEUUID embes a TIMESTAMP value
+        + Ex: 12nsjncjdj-ksnd-jwd34-lanu34dnj
+        + Sortable
+        + Generate via now()
+        
+## INSERT
+  Similar to relational syntax
+  
+  INSERT INTO users (user_id, first_name, last_name)
+  VALUES (uuid(), 'Sushil', 'Singh')
+  
+## SELECT
+  similar to relational syntax
+  
+  SELECT *
+  FROM users
+  WHERE user_id = 1j24bb-kqsn243- knx-k12jn3nksn-ksnn;
+  
+## COPY
+  + Import/exports CSV data
+  
+ COPY table1 (column1, column2, column3) FROM 'table1data.csv';
+  
+  + Header parameter skips the first line in the file
+ COPY table1 (column1, column2, column3) FROM 'tabledata.csv'
+ WITH HEADER=true;
+   
+   + There are several ways to get data into Apache Cassandra
+         + COPY + Apache Spark + Drivers + Etc.,
