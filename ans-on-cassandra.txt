@@ -22,3 +22,7 @@
 8.  d. All of the above
 9.  e. All of the above
 10. a. True
+
+*************** SET-3 ***************************
+1. d. group rows physically together on disk based on the partition key.
+2. b. It hashes the partition key values to create a partition token.
