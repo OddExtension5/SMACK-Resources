@@ -1,3 +1,5 @@
+********************* SET-1 ******************************
+
 1. Which of the following is *not* a feature of Cassandra?
       a. No SPOF b. HA c. ACID Compilance d. Linear Scalability
 
@@ -45,3 +47,54 @@
       b. When creating a table
       c. When creating a keyspace
       d. Is not configurable
+
+******************** SET-2 ****************************
+
+1. Any node in a cluster can service a write request.
+       a. True b. False
+
+2. What is the node that handles a request called?
+      a. Leader node
+      b. Master node
+      c. Slave node
+      d. Coordinator node
+
+3. The order for write path in Cassandra is:
+      a. Commit log to SSTable to MemTable
+      b. Commit log to MemTable to SSTable
+      c. Commit log to MemTable to DiskTable
+      d. None of the above
+
+4. Cassandra does not do any writes or deleted in place
+      a. True b. False
+
+5. SSTbales in Cassandra are *nott* immutable
+      a. True b. False      
+
+6. Compaction is the process of:
+      a. Taking small SSTables and merges them into bigger ones
+      b. Taking Memtables and merging them into SSTables
+      c. Merging Memtables into large Memtabkes
+      d. All of the above
+
+7. "Last write wins" uses wht to determine what data to return to client?
+      a. Tombstones
+      b. Timestamps
+      c. Compaction
+      d. Coordinator
+
+8. WHich are features of an open source contribution?
+      a. Bleeding edge features
+      b. Great for hacking
+      c. Support using IRC or mailing lists
+      d. All of the abobe
+
+9. Which features do you get with DataStax Enterprise (DSE)
+      a. Spark Integration
+      b. Extended support
+      c. Multi-DC search
+      d. Additional QA
+      e. All of the above
+
+10. DSE does *not* provide the core of open-source Cassandra
+      a. True  b. False
