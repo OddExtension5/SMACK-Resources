@@ -1,0 +1,47 @@
+1. Which of the following is *not* a feature of Cassandra?
+      a. No SPOF b. HA c. ACID Compilance d. Linear Scalability
+
+2. Cassandra uses a master/slave architecture.
+      a. True  b. False
+
+3. Cassandra supporta multiple datacenters out of the box
+      a. True  b. False
+      
+4. Which of the following statements about Cassandra is false?
+      a. All nodes hold data an can answer queries
+      b. A master node determines who gets what data
+      c. Data is replicated on different nodes
+      d. Data is partitioned around the ring
+
+5. With the CAP theorem, Cassandra is:
+      a. Available and partition tolerant
+      b. Consistent and partition tolerant
+      c. Available and consistent
+      d. None of the above
+
+6. Replication Factor (RF) is how many copies of each piece of data should you have in your cluster
+      a. True b. False
+
+7. WHere is Replication Fcator (RF) set in Cassandra?
+      a. When creating a keyspace
+      b. When creating a table
+      c. On a per-query basis
+      d. In Cassandra configuration file
+
+8. Hinted handoff is used when a node is down to replay all of the writes that occured.
+      a. True b. False
+      
+9. Consistency level can be set for:
+      a. Read requests
+      b. Write requests
+      c. Both read and write requests
+      d. Is not configurable
+
+10. Read and write speed is *not* impacted by the consistency level chosen
+      a. False  b. False
+
+11. Where is Consistency Level (CL) set in Cassandra
+      a. On a per-query basis
+      b. When creating a table
+      c. When creating a keyspace
+      d. Is not configurable
