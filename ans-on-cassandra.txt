@@ -1,0 +1,11 @@
+1.  c. ACID Compilance
+2.  b. False
+3.  a. True
+4.  b. A amster node determine who gets what data
+5.  a. Available and partition tolerant
+6.  a. True
+7.  a. When creating a keyspace
+8.  a. True
+9.  c. Both read and write requests
+10. b. False
+11. a. On a per-query basis
