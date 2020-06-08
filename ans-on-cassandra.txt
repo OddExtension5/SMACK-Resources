@@ -1,3 +1,4 @@
+************ SET-1 *************************
 1.  c. ACID Compilance
 2.  b. False
 3.  a. True
@@ -9,3 +10,15 @@
 9.  c. Both read and write requests
 10. b. False
 11. a. On a per-query basis
+
+****************** SET-2 **************************
+1.  a. True
+2.  b. Coordinator node
+3.  b. Commit log to Memtable to SStable
+4.  a. True
+5.  b. False
+6.  a. Taking small SSTables and merges them into bigger ones
+7.  b. Timestamps
+8.  d. All of the above
+9.  e. All of the above
+10. a. True
