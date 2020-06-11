@@ -177,6 +177,7 @@ UPDATE images SET tags = tags - { 'cat' } WHERE name = 'cat.jpg';
 A list is a (sorted) collection of non-unique values where elements are ordered by there position in the list.
 
 ```
+```
 CREATE TABLE plays (
     id text PRIMARY KEY,
     game text,
@@ -204,6 +205,7 @@ DELETE scores[1] FROm plays WHERE id = '123-afde';
 
 UPDATE plays SET scores = scores - [12, 21] WHERE id = '123-afde';
 
+```
 
 #### User-Defined Types (UDT)
 Creating a new user-defined type is done using a ``CREATE TYPE`` statement.
@@ -269,3 +271,60 @@ A tuple is always frozen (without the need of the frozen keyword) and it is not 
 + Good for large partitions
 + SASI ( SSTable Attached Secondary Index)
 + http://www.doanduyhai.com/blog/?p=2058
+
+```
+CREATE CUSTOM INDEX title ON movies_by_actor (title) USING
+'org.apache.cassandra.index.sasi.SASIIndex' WITH OPTIONS = { 'mode': 'CONTAINS'};
+
+```
+
+Using CQL, you can create an index on a column after defining a table. You can also index a collection column.
+Secondary indexes are used to query a table using a column that is not normally queryable.
+
+Secondary indexes are tricky to use and can impact performance greatly. The index table is stored on each node in a cluster, so a query involving a secondary index can rapidly become a performance nightmare if multiple nodes are accessed.
+
+``A general rule of thumb is to index a column with low cardinality of few values.``
+
+```
+CREATE TABLE cycling.rank_by_year_and_name (
+    race_year int,
+    race_name text,
+    cyclist_name text,
+    rank int,
+    PRIMARY KEY ((race_year, race_name), rank)
+);
+
+// both race_year and race_name must be specified as these columns comprise the partition key
+SELECT * FROM cycling.rank_by_year_and_name WHERE race_year=2015 AND race_name='Tour of Japan';
+
+//this query will fail, because the table has a composite partition key
+SELECT * FROM cycling.rank_by_year_and_name WHERE race_year=2015;
+
+//An index is created for the race year, and the query will succceed.
+//An index name is optional and must be unique within a keyspace. If you don not provide a name, Cassandra will assign a name like race_year_idx
+
+CREATE INDEX ryear ON cycling.rank_by_year_and_name (race_year);
+
+SELECT * FROM cycling.rank_by_year_and_name WHERE race_year=2015;  // now it will work!
+
+//A clustering column can also be used to create an index. An index is created on rank, and used in a query
+CREATE INDEX rrank ON cycling.rank_by_year_and_name (rank);
+SELECT * FROM cycling.rank_by_year_and_name WHERE rank = 1;
+
+```
+
+**When not to use an index**
++ On high-cardinality columns for a query of a huge volumne of records for a small number of results.
++ In tables that use a counter column
++ On a frequently updated or deleted column
++ To look for a row in a large partition unless narrowly queried.
+
+
+### Query-First Modeling
+
++ We are used to modeling domains
++ Now we model queries as well
++ Dictated by key design and index behaviour
++ harder? Easier? Inevitable?
+
+### Materialized Views
