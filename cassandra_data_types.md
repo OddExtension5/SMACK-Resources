@@ -63,6 +63,7 @@ UPDATE images SET tags = tags - { 'cat' } WHERE name = 'cat.jpg';
 A list is a (sorted) collection of non-unique values where elements are ordered by there position in the list.
 
 ```
+```
 CREATE TABLE plays (
     id text PRIMARY KEY,
     game text,
@@ -89,7 +90,7 @@ DELETE scores[1] FROm plays WHERE id = '123-afde';
 //deleting all the occurrences of a particular values in the list (if a particular elelemt doesn't occur at all in the list, it is simply ignored and no error is thrown):
 
 UPDATE plays SET scores = scores - [12, 21] WHERE id = '123-afde';
-
+```
 
 ### User-Defined Types (UDT)
 Creating a new user-defined type is done using a ``CREATE TYPE`` statement.
