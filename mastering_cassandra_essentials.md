@@ -328,3 +328,100 @@ SELECT * FROM cycling.rank_by_year_and_name WHERE rank = 1;
 + harder? Easier? Inevitable?
 
 ### Materialized Views
+
++ Materialized Views are suited for high cardinality data
++ The data in a materialized view is arranged serially based on the view's primary key.
++ Secondary Indexes are suited for low cardinality data.
++ Queries of high cardinality columns on secondary indexes require Cassandra to access all nodes in a cluster, causing high read latency.
+
+**Restrictions for materialized views**:
+  + Include all of the source table's primary keys in the materialized view's primary key
+  + Only one new column can be added to the materialized view's primary key, Static column are not allowed
+  + Exclude rows with null values in the materialized view primary key column
+
+**Static column**: A special column that is shared by all rows of a partition
+
+```
+CREATE TABLE cyclist_mv (
+      cid UUID PRIMARY KEY,
+      name text,
+      age int,
+      birthday date,
+      country text
+);
+
+CREATE MATERIALIZED VIEW cyclist_by_age AS
+        SELECT age, birthday, name, country
+        FROM cyclist_mv
+        WHERE age IS NOT NULL AND cid IS NOT NULL
+        PRIMARY KEY (age, cid);
+        
+SELECT age, name, birthday FROM cyclist_by_age WHERE age = 18;
+
+CREATE MATERIALIZED VIEW cyclist_by_birthday AS
+         SELECT age, birthday, name, country
+         FROM cyclist_mv
+         WHERE birthday IS NOT NULL AND cid IS NOT NULL
+         PRIMARY KEY (birthday, cid);
+         
+CREATE MATERIALIZED VIEW cyclist_by_country AS
+          SELECT age, birthday, name, country
+          FROM cyclist_mv
+          WHERE country IS NOT NULL AND cid IS NOT NULL
+          PRIMARY KEY (country, cid);
+          
+SELECT age, name, birthday FROM cyclist_by_country WHERE country = 'India';
+
+SELECT age, name, birthday FROM cyclist_by_birthday WHERE birthday = '1987-09-04';
+
+```
++ Cassandra can only write data directly to source tables, not to materialized views. Cassandra updates a materilaized view asynchronously after inserting data into the source table, so the update of materialized view is delayed. Cassandra performs a read repair to a materialized view only after updating the source table.
+
+## Cassandra Distributed Architecture
+
+### Nodes and Clusters
+
++ Remember: one computer is not enough
++ Every node is a peer
++ Ring Structure
++ Tokens and hashing
++ Elastic Scaling
+
+Partition Key -----> Hashing ----> Token ID ----> Then It decide which node to go to
+
+### Replication
+
++ Only one copy of data would be madness
++ Hardware failure is certain
++ Replication factor
++ Replica Placement Strategy
+
+### Consistency
+
++ How many replicas is enough?
++ Introducing the coordinator
++ Tunable consistency levels
++ **R + W > N**
+
+CL = ALL, Quorum (Majority Vote), ONE
+
+I wanted to write ---> Pick a random node, chosed one node called Coordinator ---> Cordinator will hash the partition key and check the token for finding the node --> This will provide path to appropriate node for data write based on data replication
+
+```R + W > N```
+R: No. of node we can read <br/>
+W: No. of nodes that we can write <br/>
+N: Replication Factor <br/>
+
+### Multiple Data Centers
+
++ Requires at business scale
++ Builds on consistency model
++ Tunable: **EACH_QUORUM** , **LOCAL QUORUM**
+
+### Virtual Nodes (vnodes)
+
++ Token assignment is work
++ Elastic scale is a burden on one node
++ num_tokens = 256
+
+
