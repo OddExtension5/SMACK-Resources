@@ -491,6 +491,10 @@ Picking the right compaction strategy for your workload will ensure the best per
 2.  Leveled Compaction Startegy
       LCS is optimised for read heavy workloads, or workloads with lots of updates and deletes. It is not good choice for immutable time series data
       
-3. 
+3. Time WIndow Compaction Strategy
+      Time Window Compaction Startegy is designed for TTL'ed, mostly immutable time series data.
+      
+``Type of Compaction``
+The concept
 
 
