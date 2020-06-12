@@ -1,4 +1,4 @@
-# Notes of Mastering Cassandra Essentials Course by Tim Berglund
+# Mastering Cassandra Essentials Course by Tim Berglund
 
 ## Course Outline
 
@@ -416,12 +416,81 @@ N: Replication Factor <br/>
 
 + Requires at business scale
 + Builds on consistency model
-+ Tunable: **EACH_QUORUM** , **LOCAL QUORUM**
++ Tunable: **EACH_QUORUM** , **LOCAL_QUORUM**
 
 ### Virtual Nodes (vnodes)
 
 + Token assignment is work
 + Elastic scale is a burden on one node
 + num_tokens = 256
+
+Vnodes distribute data across nodes at a finer granularity that can be easily achieved if calculated tokens are used.
+Vnodes simplify many taska in Cassandra:
+  + Tokens are automatically calculated and assigned to each node.
+  + Rebalancing a cluster is automatically accomplished when adding or removing nodes. When a node joins the cluster, it assumes responsibility for an even portion of data from the other nodes in the cluster. If a node fails, the load is spread evenly across other nodes in the cluster.
+  + Rebuilding a dead node is faster because it involves every node in the cluster.
+  
+**Note**: DataStax recommends using **8** vnodes (tokens). Using 8 vnodes distributes the workload between systems with a ~10% variance and has minimal impact on performance.
+
+![Image](https://docs.datastax.com/en/cassandra-oss/3.0/cassandra/images/arc_vnodes_compare.png)
+
+### Gossip
+
+Gossip is a peer-to-peer communication protocol in which nodes periodically exhange state information about themselves and about other nodes they know about. The gossip process runs every second and exchanges state messages with up to three other nodes in the cluster. The nodes exchange information about themselves abd about the other nodes that they have gossiped about, so all nodes quickly learn about all other nodes in the cluster.
+
+A gossip message has a version associated with it, so that during a gossip exachnge, older information is overwritten with the most current state for a particular node.
+
+[Read More](https://www.linkedin.com/pulse/gossip-protocol-inside-apache-cassandra-soham-saha/)
+
+## Read and Write Path in Cassandra
+
+### The Write Path
+
++ Log-structured merge tree
++ Commit all writes to a log immediately [ONE per Node]
++ Buffer writes in the memtable [Per Table]
++ Flush sequentially to immutable SSTables 
+
+
+**Coordinator** sending a write ---> sent to **COMMIT LOG** [one per node] ---> Put this into **Mem Table** [one per table] ---> If written succesfully on memtable then we get ACK from MemTable to coordinator  ---> If mem table fills up then flush data into the **SSTable** (disk).
+
+![Image2](https://docs.datastax.com/en/cassandra-oss/2.1/cassandra/images/dml_write-process_12.png)
+
++ Memtables and SSTables are maintained per table.
++ SSTables are immutable, not written to again the memtable is flushed.
+
+### The Read Path
+
++ A process of assembling the rows and columns we need
++ First look in the memtable
++ Then look through the SSTables
++ Key cache and bloom filters
++ Commit doesn't participate in read path
+
+**Coordinator** sending a read ---> Do we have what we need in **Memtable** ---> If we don't find in Memtable then go to **SSTable** ---> **Bloom filter** helps to find out the in which partition of SStable my data resides (probabilistics) ---> If Bloom Filter says yes it may reside in this partition then check on the **Key Cache** if its previously read if not ---> Check on SSTable partition
+
+
+``Coordinator --> Memtable --> Bloom FIlter ---> Key Cache --> SSTable partition``
+
+![image34](https://docs.datastax.com/en/archived/cassandra/3.0/cassandra/images/dml_caching-reads_12.png)
+
+### Compaction
+
++ Wait, we just keep writing SSTables forever?
++ Compaction two SSTables
++ Compaction and tombstones
++ Size-tiered compaction ---> Write heavy workload
++ Leveled COmpaction ---> Read heavy workload
+
+Picking the right compaction strategy for your workload will ensure the best performance for both querying and for compaction itself.
+
+1. Size Tiered Compaction Strategy
+      The default compaction strategy. Useful as fallback when other strategies don't fit the workload.
+      Most useful for non pure time series workloads with spinning disks, or when the I/O from lCS is too high
+      
+2.  Leveled Compaction Startegy
+      LCS is optimised for read heavy workloads, or workloads with lots of updates and deletes. It is not good choice for immutable time series data
+      
+3. 
 
 
