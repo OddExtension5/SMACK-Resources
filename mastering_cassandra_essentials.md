@@ -484,17 +484,76 @@ A gossip message has a version associated with it, so that during a gossip exach
 
 Picking the right compaction strategy for your workload will ensure the best performance for both querying and for compaction itself.
 
-1. Size Tiered Compaction Strategy
+1. Size Tiered Compaction Strategy <br/>
       The default compaction strategy. Useful as fallback when other strategies don't fit the workload.
       Most useful for non pure time series workloads with spinning disks, or when the I/O from lCS is too high
       
-2.  Leveled Compaction Startegy
+2.  Leveled Compaction Startegy <br/>
       LCS is optimised for read heavy workloads, or workloads with lots of updates and deletes. It is not good choice for immutable time series data
       
-3. Time WIndow Compaction Strategy
+3. Time Window Compaction Strategy <br/>
       Time Window Compaction Startegy is designed for TTL'ed, mostly immutable time series data.
       
 ``Type of Compaction``
-The concept
 
+The concept of compaction is used for different kinds of operations in Cassandra, the common thing about these operations is that it takes one or more sstables and output new sstables. The types of compactions are:
+
+**Minor compaction** <br/>
+    triggered automatically in Cassandra
+
+**Major compaction** <br/>
+a user executes a compaction over all sstables on the node.
+
+**User defined compaction** <br/>
+a user triggers a compaction on a given set of sstables.
+
+
+## The Java Driver in Cassandra
+
+### Java Driver
+
+```
+build.gradle
+
+apply plugin: 'java'
+apply plugin: 'idea'
+
+repositories {
+    jcenter(0
+}
+
+dependencies {
+    compile 'com.datastax.cassandra:cassandra-river-core:3.2.0'
+    compile 'com.datastax.cassandra:cassandra-driver-mapping:3.2.0'
+}
+
+task cassandra(type: javaExec) {
+  classpath = sourceSets.main.runtimeClasspath
+  main = 'Cassandra'
+}
+```
+```
+import com.datastax.driver.core.*;
+import java.util.UUID;
+
+public class Cassandra {
+
+  public static void main(STring args[]) {
+       Cluster cluster;
+       Session session;
+       
+       cluster = Cluster.builder().addContactPoint("127.0.0.1").build();
+       session = cluster.connect("essentials");
+       
+       session.execute("INSERT INTO movies (movie_id, title, release_year) VALUES (UUID(), 'Blade RUnner', 2017););
+       
+       ResultSet results = session.execute("SELECT * FROM movies");
+       for ( Row row: results) {
+       System.out.format("%s %s %s\n", row.getUUID("movie_id"), row.getString(:title"), row.getInt("release_year"));
+       }
+       
+     }
+  }
+  
+```
 
