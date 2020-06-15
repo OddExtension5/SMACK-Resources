@@ -164,12 +164,59 @@
       c. Minimal compared to data streaming
       d. All of the above
 
-15. 
+15. Snitch is used to...
+      a. Communicate with other nodes.
+      b. Assign a master node in cluster.
+      c. Determine/declare each node's rack and data center.
+      d. Report downed nodes to coordinator node.
 
-16.
+16. Snitch is configured in the cassandra.yaml file.
+      a. True     b. False
 
-17.
+17. Which is the following is *not* a type of snitch?
+      a. SimpleSnitch
+      b. PropertyFileSnitch
+      c. DynamicSnitch
+      d. CassandraSnitch
 
-18.
-19.
-20
+18. A replication factor of three means that Cassandra will store a total of four copies: the master and three copies.
+      a. True     b. False
+      
+19. A replication factor greater than one...
+      a. widens the range of token values a single node is responsible for.
+      b. causes overlap in the token ranges amongst nodes.
+      c. requires more storage in your cluster.
+      d. All of the above.
+      
+20. Where does Cassandra reside in the CAP theorem?
+      a. consistency/availability
+      b. availability/partition tolerance
+      c. partition tolerance/consistency
+      
+21. With a replication factor of two, how many nodes must respond with success using consistency level quorum to indicate a successful operation?
+      a. 1
+      b. 2
+      c. 3
+      d. 4
+
+22. With a replication factor of three, which of the following options guarantee strong consistency? Check all that apply.
+      a. write all, read one
+      b. write all, read quorum
+      c. write quorum, read all
+      d. write one, read all
+      e. All of the above
+
+23. The default time for a node to store a hint is:
+      a. 1 hour
+      b. 3 hours
+      c. 5 hours
+      d. 10 hours
+
+24. Hinted handoff is disabled by default.
+      a. True     b. False
+
+25.
+
+26.
+
+27.
