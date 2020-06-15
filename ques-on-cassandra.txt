@@ -106,8 +106,70 @@
        c. optimize query-time joins keeping frequently queried rows together on disk
        d. group rows physically together on disk based on the partition key
        
- 2. What is the role of the partitioner?
+2. What is the role of the partitioner?
       a. It organizes the data together physically on disk
       b. It hashes the partition key values to create a partition token
       c. It retrieves partition data for a CQL query
       d. It physically separates rows into equal-sized partitions
+      
+3. Installing and starting Cassandra from a tarball requires extensive setup and configuration.
+      a. True     b. False
+      
+4. You must first obtain a license before using DataStax Enterprise edition for development.
+      a. True     b. False
+      
+5. Partition key columns are optional if you have clustering columns.
+      a. True      b. False
+
+6. What benefits do Clustering columns provide?
+      a. Reading sorted data is a matter of seeking the disk head once.
+      b. They allow partitions to be spread over several drives.
+      c. You can change the clustering criteria on a table at any time.
+      d. The optimize writes by shuffling the data on disk at write time.
+
+7. Cassandra works best on network attached storage.
+      a. True     b. False
+
+8. How much data can a single Cassandra node effectively handle?
+      a. 2-4 Terabytes
+      b. 1-5 Terabytes
+      c. 10-30 Terabytes
+      d. 10-50 Terabytes
+      e. 1 petabytes
+
+9. In a full network partition, that is, parts of the cluster are completely disconnected from the whole, only the largest group of nodes can still satisfy queries.
+      a. True     b. False
+
+10. By default, how many vnodes does each node have?
+      a. 1
+      b. 128
+      c. 256
+      d. 512
+
+11. Which parameter in the cassandra.yaml file configures vnodes?
+      a. num_tokens
+      b. num_nodes
+      c. num_vnodes
+      d. set_numnodes
+
+12. When using vnodes, Cassandra automatically assigns the token ranges for you.
+      a. True     b. False
+
+13. Nodes can only gossip with specific other nodes in the cluster.
+      a. True     b. False
+
+14. Which of the following statements are true concerning gossip? 
+      a. Constant trickle of network traffic
+      b. Does not cause network spikes
+      c. Minimal compared to data streaming
+      d. All of the above
+
+15. 
+
+16.
+
+17.
+
+18.
+19.
+20
