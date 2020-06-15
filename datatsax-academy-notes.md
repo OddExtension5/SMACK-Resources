@@ -183,8 +183,163 @@ SYN:-  End:Gen:Ver {127.0.0.1:100:15, 127.0.0.3:50:15, etc.,}
    | PropertyFileSnitch            | Ec2MultiRegionSnitch  |
    | GossipingPropertyFileSnitch   | GoogleCloudSnitch     |
    | DynamicSnitch                 | CloudstackSnitch      |
+   
+ 
+ #### Simple Snitch
+ 
+ + Places all nodes in the same data center and rack
+ + Default snitch
+ 
+ ```java
+ public class SimpleSnitch extends AbstractEndpointSnitch {
+    public String getRack(InetAddress endpoint) {
+        return "rack1";
+     }
+     
+     public String getDatacenter(InetAddress endpoint) {
+        return "datacenter1";
+     }
+ }
+ ```
+ 
+ #### Property File Snitch
+ 
+ + Reads datacenter and rack information for all nodes from a file
+ + You must keep files in sync with all nodes in the cluster
+ + ```cassandra-topology.properties``` file
+ 
+ ```
+ 175.56.12.105=DC1:RAC1
+ 175.50.13.200=DC1:RAC1
+ 175.54.35.197=DC1:RAC2
+ 175.54.35.152=DC1:RAC2
+ 
+ 120.53.24.101=DC2:RAC1
+ 120.55.16.200=DC2:RAC1
+ 120.57.18.103=DC2:RAC2
+ 120.57.18.177=DC2:RAC2
+ ```
+ 
+ #### Gossiping Property File Snitch
+ 
+ + Relieves the pain of the property file snitch
+ + Declare the current node's DC/rank information in a file
+ + You must set each individual node's settings
+ + But you don't have to copy settings as with property file snitch
+ + Gossip spreads the settings through the cluster
+ + ``cassandra-rackdc.properties`` file
+ 
+ ```
+ dc=DC1
+ rack=RAC1
+ ```
+ 
+ #### Rack Inferring Snitch
+ 
++ Infers the rack and DC from the IP address
+
+#### Dynamic Snitch
+
++ Layered on top of your actual snitch
++ Maintains a pulse on each node's performance
++ Determines which node to query replicas from depending on node health
++ Turned on by default for all snitches
++ http://www.datastax.com/dev/blog/dynamic-snitching-in-cassandra-past-present-and-future
+ 
+#### Cloud-Based Snitches
+ 
++ Ec2Snitch
+  + Single region Amazon EC2 deployment
++ Ec2MultiRegionSnitch
+  + Multi-region Amazon EC2 deployment
++ GoogleCloudSnitch
+  + Multi-region Google cloud deployment
++ Cloudstack Snitch
+  + For Cloudstack environments
+  
+
+#### Configuring Snitches
+
++ All nodes in the cluster must use the same snitch
++ Changing cluster newtwork topology requires restarting all nodes
++ Run sequential repair and cleanup on each node
+
+### Replication
+RF=3
+
+```python
+CREATE KEYSPACE killrvideo
+WITH REPLICATION = {
+    'clsss': 'NetworkTopologyStrategy'
+    'dc-west':2, 
+    'dc-east':3
+}
+```
+
+### Consistency
+
++ Cassandra: AP database and tunable consistency
++ CL = ONE, QUORUM, ALL
+
+#### Consistency Settings
+
+Weakest to strongest
 
 
+| Setting                 | Description                                                  |
+|-------------------------|--------------------------------------------------------------|
+| ANY                     | Storing a hint at minimum is satisfactory                    |
+| ONE, TWO, THREE         | Checks closest nodes(s) to coordinator                       |
+| QUORUM                  | Majortiy vote, (sum_of_replication_factors / 2) + 1          |
+| LOCAL_ONE               | Closest node to coordinator in same data center              |
+| LOCAL_QUORUM            | Closest quorum of nodes in same data center                  |
+| EACH_QUORUM             | Quorum of nodes in each data center, applies to writes only  |
+| ALL                     | Every node must participate                                  |
+
+
++ The higher the consistency, the less chance you may get stable data
+  + Pay for this with latency
+  + Depends on your situational needs
+  
+
+### Hinted Handoff
+Depending on your consistancy level, you can still service write requests even when nodes are down. Apache Cassandra accomplishes this via hinted handoff
+
+#### Settings
+
++ cassandra.yaml
++ You can disable hinted handoff
++ Choose directory to store hints file
++ Set the amount of time a node will store a hint
++ Default is three hours
+
+#### Consistency Level ANY - Beware...
+
++ Consistency level of ANY means storing a hint suffices
++ Consistency level of ONE or more means at least one replica must successfully write
++ Hint does not suffice
+
+### Read Repair
+
+#### Anti-Entropy Operations
+
++ Network partitions cause nodes to get out of the sync
++ You must choose between availability vs. consistency level
++ CAP Theorem
+
+#### Read Repair Chance
+
++ Performed when read is at consistency level less than ALL
++ Request reads only a subset of replicas
++ We can't be sure replicas are in sync
++ Generally you are safe, but no guarantees
++ Response sent immediately when consistency level is met
++ Response sent immediately when consistency level is met
++ Read repair done asynchronously in the background
++ ``dclocal_read_repair_chance`` set to 0.1 (10%) by default
+   + Read repair that is confined to the same datacenter as the coordinator node
++ ``read_repair_chance`` set 0 by default
+   + For a read repair across all datacenters with replicas 
 
 
 
