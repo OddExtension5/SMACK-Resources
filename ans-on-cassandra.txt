@@ -38,5 +38,14 @@
 12. b. False
 13. b. False
 14. d. All of the above
-15.
-16.
+15. c. Determine/declare each node's rack and data center.
+16. a. True
+17. d. CassandraSnitch
+18. b. False
+19. d. All of the above.
+20. b. availability/partition tolerance
+21. b. 2
+22. e. All of the above
+23. b. 3 hours
+24. b. False
+25.
