@@ -26,3 +26,17 @@
 *************** SET-3 ***************************
 1. d. group rows physically together on disk based on the partition key.
 2. b. It hashes the partition key values to create a partition token.
+3. b. False
+4. b. False
+5. b. False
+6. a. Reading sorted data is a matter of seeking the disk head once.
+7. b. False
+8. a. 2-4 Terabytes
+9. b. False
+10. b. 128
+11. a. num_tokens
+12. b. False
+13. b. False
+14. d. All of the above
+15.
+16.
