@@ -1,8 +1,6 @@
 ## DS201: DataStax Enterpise 6 Foundation of Apache Cassandra
 
-```
 CQL, Partitions, Clustering Columns, Application Connectivity, Node, Ring, Peer to Peer, Vnodes, Gossip, Snitch, Replication, Consistency,Hinted Handoff, Read Repair, Node Sync, Write Path, Read Path, Compaction, Advance Performance
-```
 
 ### Clustering Columns
 
@@ -321,6 +319,8 @@ Depending on your consistancy level, you can still service write requests even w
 
 ### Read Repair
 
+Read repair is one of the mechanisms that ensures that data in your Apache Cassandra cluster stays in sync
+
 #### Anti-Entropy Operations
 
 + Network partitions cause nodes to get out of the sync
@@ -334,29 +334,128 @@ Depending on your consistancy level, you can still service write requests even w
 + We can't be sure replicas are in sync
 + Generally you are safe, but no guarantees
 + Response sent immediately when consistency level is met
-+ Response sent immediately when consistency level is met
 + Read repair done asynchronously in the background
 + ``dclocal_read_repair_chance`` set to 0.1 (10%) by default
    + Read repair that is confined to the same datacenter as the coordinator node
 + ``read_repair_chance`` set 0 by default
    + For a read repair across all datacenters with replicas 
+   
+#### Nodetool Repair
 
++ Syncs all data in the cluster
++ Expensive
+    + Grows with amount of data in cluster
++ Use with clusters servicing high writes/deletes
++ Last line of defense
++ RUn to synchronize a failed node coming back online
++ RUn on nodes not read from very often
 
+### Node Sync
+New feature in DataStax Enterprize 6
 
+#### Full Repairs
 
++ Full repairs bog down the system
++ Bigger the cluster and dataset, the worse the time
++ In times past, we recommended running full repair within ``gc_grace_seconds``
 
+#### Node Sync
 
++ Runs in the background continuously repairing your data
+  + Quiet hum vs. everybody stop what you're doing
++ Better to repair in small chunks as we go rather than full repair
++ Automatic enabled by default
+    + By you must enable it per table 
 
+#### Details
 
++ Each node runs NodeSync
++ NodeSync continuously validates and repairs data
++ Enables on per-table basis
+  + Default is disables
+  
+```python
+CREATE TABLE myTable (...) WITH nodesync = { 'enables': 'true'};
+```
+#### Save Points
 
++ Each node splits its local range into segments
+    + Small token range of a table
++ Each segment makes a save point
+    + NodeSync repairs a segment
+    + Then NodeSync saves its progress
+    + Repeat
++ NodeSync priorities segments to meet the deadline target
 
+#### Segments Sizes
+
++ Determining toekn range in a given segment is a simple recursive split
++ Target is each segment is less than 200MB
+    + Configurable, but good by default, ``segment_size_target_bytes``
+    + Greater than partition
+    + So partitions greater than 200MB win over segemnts less than 200MB
++ Algorithm doesn't calculate data size but instead assumes acceptable distribution of data among your cluster
+
+#### Segment Failures
+
++ Nodes validates/repair segments as a whole
++ If node fails during segment validation, node drops all work for that segment and starts over
++ Node records successful segment validations in the ``system_distributed.nodesync_status`` table
+
+#### Segment Outcomes
+
++ ``full_in_sync``: All replicas were in sync
++ ``full_repaired``: Some repair necessary
++ ``partial_in_sync``: not all replicas responded (at least 2 did), but all respondent were in sync
++ ``partial_repaired``: not all replica responded (at least 2 did), with some repair needed
++ ``uncompleted``: one node available/responded; no validation occurred
++ ``failed``:unexpected error happened; check logs
+
+#### Segment Validation
+
++ NodeSync simply performs a read repair on the segment
++ Read data from all replicas
++ Check for inconsistencies
++ Repair stale nodes
+
+### Read Path
+
+BloomFilter ---> KeyCache --> Partition Summary --> Partition Index ---> SSTable
+
+#### DataStax Enterprize 6.0 Read Path Optimizations
+
++ No Partition Summary
++ Partition Index changed to a trie-based data structure
++ SSTable looksups in this format scream
++ Huge Performance improvments; especially for large SSTables
+
++ Migrating from OSS Apache Cassandra is seamless
++ Datastax Enterprize can tell what kind of SSTable format it's working with
++ As old SSTable are compacted, DataStax Enterpize writes them out in the new format
+
+### Compaction
+
++ A process Apache Cassandra uses to remove all the stale data from the pre-existing SSTables
++ Compact two SSTables into new SSTable with latest data
+
+#### Compaction Strategies
+
++ Compaction strategies are configurable. These strategies include:
+    + ``Size Tiered Compaction``: (Default) triggers when multiple SSTables of a similar size are present
+    + ``Leveled Compaction``: groups SSTables into levels, each of which has fixed size limit which is 10 times larger than the previous level
+    + ``TimeWindow Compaction``: creates time window buckets of SStables that are compacted with each other using the SIze Tiered Compaction Strategy.
+    
++ Use the ``ALTER TABLE`` command to change the strategy
+
+```python
+ALTER TABLE mykeyspace.mytable WITH compaction = {
+    'class': 'LeveledCompactionStrategy' ":
+```
 
 
 ## DS220: DataStax Enterprize 6 Practical Application Data Modeling with Apache Cassandra
 
-```
 Data Modeling Overview, Relational Vs. Cassandra, Cassandra Table, Partition ANd Storage Structure, Clustering Columns, Denormalization, Table Features, Collections, UDTs, Counters, UDFs and UDAs, Conceptual Data Modelings, Application Workflow And Access Patterns, Logical Data Modeling, Analysis And Validation, Write Techniques, Read Techniques, Table/Key Optimization, Data Model Migration, Data Model-Anti Patterns, Data Modeling Use Cases
-```
 
 
 
