@@ -215,8 +215,68 @@
 24. Hinted handoff is disabled by default.
       a. True     b. False
 
-25.
+25. Read repair always occurs when consistency level is set to...
+      a. ONE
+      b. TWO
+      c. QUORUM
+      d. ALL
 
-26.
+26. What does read_repair_chance do?
+      a. Sets the probability which Cassandra will perform a read repair with a consistency level of ALL.
+      b. Sets the probability which Cassandra will perform a read repair with a consistency level less than ALL.
+      c. Sets the probability that replicas between two nodes has become out of sync.
+      d. Sets the probability that Cassandra will scan for bad sectors on the hard disk during a read. 
 
-27.
+27. The purpose of the commit log is...
+      a. to later server reads.
+      b. to replay if a crashed node restarts.
+      c. to store the data sorted by clustering columns.
+      d. to serve as a copy of the MemTable.
+      
+28. When does a client acknowledge a write?
+      a. After the commit log and SSTable are written
+      b. After the MemTable and SSTable are written
+      c. After the MemTable is written
+      d. After the commit log and MemTable are written
+ 
+29. Which of the following are stored sorted by clustering columns? Check all that apply.
+      a. Commit log
+      b. SSTable
+      c. Heap table
+      d. MemTable
+ 
+30. The partition summary...
+      a. store the most recently accessed records.
+      b. stores partition byte offsets in the SSTable.
+      c. stores byte offsets into the partition index.
+      d. stores the actual partitions.
+ 
+31. The key cache...
+      a. stores the byte offset of the most recently accessed records.
+      b. stores partition byte offsets in the SSTable.
+      c. stores byte offsets into the partition index.
+      d. stores the actual partitions.
+ 
+32. Which of the following structures reside on disk? Check all that apply.
+      a. key cache
+      b. SSTable
+      c. bloom filter
+      d. partition summary
+      e. partition index
+      
+ 33. Which of the following are benefits from compaction? Check all that apply.
+      a. More optimal disk usage
+      b. Faster reads
+      c. Cassandra responds quick while compacting
+      d. Less memory pressure
+ 
+ 34. All tombstones are discarded during compaction.
+      a. True     b. False
+ 
+ 35. In which of the following scenarios would a new partition on disk be larger than either of its input partition segments after a compaction?
+      a. The input partitions are full of tombstones whose timestamps are greater than gc_grace_seconds.
+      b. Input partition segments are mostly made up of UPDATE operations.
+      c. The input partitions are not liable candidates for compaction.
+      d. The input partition segments are made up of mostly INSERT operations.
+ 
+ 
