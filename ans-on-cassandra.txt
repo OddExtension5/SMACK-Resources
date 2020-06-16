@@ -48,4 +48,14 @@
 22. e. All of the above
 23. b. 3 hours
 24. b. False
-25.
+25. d. ALL
+26. b. Sets the probability which Cassandra will perform a read repair with a consistency level less than ALL.
+27. b. to replay if a crashed node restarts.
+28. d. After the commit log and MemTable are written
+29. b. SSTable, d. Memtable
+30. c. stores byte offsets into the partition index.
+31. a. stores the byte offset of the most recently accessed records.
+32. b. SSTable, d. Partition Index
+33. a. More optimal disk usage, b. Faster reads, d. Less memory pressure
+34. b. false
+35. d. The input partition segments are made up of mostly INSERT operations.
