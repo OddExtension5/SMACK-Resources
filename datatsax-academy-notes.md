@@ -452,12 +452,265 @@ ALTER TABLE mykeyspace.mytable WITH compaction = {
     'class': 'LeveledCompactionStrategy' ":
 ```
 
+*************************************************** THE END ****************************************************************
 
 ## DS220: DataStax Enterprize 6 Practical Application Data Modeling with Apache Cassandra
 
 Data Modeling Overview, Relational Vs. Cassandra, Cassandra Table, Partition ANd Storage Structure, Clustering Columns, Denormalization, Table Features, Collections, UDTs, Counters, UDFs and UDAs, Conceptual Data Modelings, Application Workflow And Access Patterns, Logical Data Modeling, Analysis And Validation, Write Techniques, Read Techniques, Table/Key Optimization, Data Model Migration, Data Model-Anti Patterns, Data Modeling Use Cases
 
 
+### Data Modeling
+
+#### What is Data Modeling?
+
++ Analyze requirements of the domain
++ Identify entities and relationships ---- Conceptual Data Model
++ Identify queries --- Workflow and Access Patterns
++ Specify the schema --- Logical Data Model
++ Get something working with CQL --- Physical Data Model
++ Optimize and tune
+
+#### Data Modeling Methodology
+
+| Conceptual Data Model & Application Workflow | --> | Mapping Conceptual to Logical | --> | Logical Data Model | ---> | Physical Data Model | ---> | Optimization Tuning |
 
 
+### Relational Vs. Apache Cassandra
 
+Simple difference Overview
+
+|  Relational Database                   |  Apache Cassandra                |
+|----------------------------------------|----------------------------------|
+| Sample relational model methodology    | Cassandra modeling methodology   |
+| Data --> Model --> Application         | Application --> Model --> Data   |
+| Entities are king                      | Queries are king                 |
+| Primary Key for uniqueness             | Primary keys are much more       |
+| Often have single point of failure     | Distributed architecture         |
+| ACID Complaint                         | CAP Theorem                      |
+| Joins and indexes                      | Denormalization                  |
+| Referential Integrity enforces         | RI not enforced                  |
+
+#### Relational Data Modeling Methodology
+
+Sample Methodology
+
+CDM --> Mapping --> Relational LDM --> Normalization ---> Normalized Relational and Queries---> Optimization ---> Relational PDM
+
+CMD: Conceptual Data Model <br/>
+LDM: Logical Data Model <br/>
+PDM: Physical Data Model
+
+#### Transactions and ACID Compilance
+Relational databases are ACID compilant
+
+|   Term          |                         Definition                                                                          |
+|-----------------|-------------------------------------------------------------------------------------------------------------|
+|   Atomicity     | All statements in a transaction succeed (commit), or none of them do (rollback)                             |
+|   Consistency   | Transactions can't leave the DB in an inconsistent state.The new DB state must satisfy integrity constraints|
+|   Isolation     | Transactions do not interfere with each other                                                               |
+|   Durability    | Completed transactions persist in the event of subsequent failure                                           |
+
+#### Transactions in Apache Cassandra
+
+Cassandra does not support ACID transactions
+
++ ACID causes a significant performance penalty
++ Not required for many use cases
++ However, a single Cassandra write operations demonstrates ACID properties
+    + INSERTs, UPDATEs, and DELETEs are atomic, isloated and durable
+    + Tunable consistency for data replicated to nodes, but does not handle application integrity constraints
+    
+#### Apache Cassandra and CAP Theorem
+Consistency, Availability and Partition Tolerance
+
++ By default, Cassandra is an AP database
++ However, this is tunable with consistency level
++ By tuning consistency level, you can make it more CP than AP.
++ However! Cassandra isn't designed to be CA because you can't sacrifice partition tolerance
+
+#### Referential Integrity -- Apache Cassandra
+Apache Cassandra does NOT enforce referential integrity
+
++ Due to performance reasons -- would require a read before a write
++ Not an issue that has to be fixed on the Apache Cassandra side
++ Referential integirty can be enforced in an application design -- more work for developers
+
+OR
+
++ Run DSE Analytics with Apache Spark to validate that duplicate data is consistent
+
+### Enough CQL to get you started
+
+#### KEYSPACE
+Creating your container
+
++ Top level namespace/container
++ Similar to a relational database schema
+
+```python
+CREATE KEYSPACE killrvideo
+    WITH REPLICATION = {
+        'class': 'SimpleStrategy'
+        'replication_factor': 1
+     };
+```
++ Replication parameters required
+
+#### USE
+Accessing your keyspace
+
++ USE switches between keyspaces
+```pthon
+USE killrvideo;
+```
+#### Tables
+
++ Keyspaces contain tables and tables contain data
+
+```python
+CREATE TABLE table1 (
+    column1 TEXT,
+    column2 TEXT,
+    column3 INT,
+    PRIMARY KEY (column1)
+);
+
+CREATE TABLE users (
+    user_ud UUID,
+    first_name TEXT,
+    last_name TEXT,
+    PRIMARY KEY (user_id)
+);
+```
+#### Basic Data Types
+
++ Text
+    + UTF8 encoded string
+    + varchar is same as text
++ INT
+    + signed
+    + 32 bits
+    
++ UUID (Universally Unique Identifier)
+    + ex: 53b12dj3-12dn-3je3-2j3n-2j3ndj42kns
+    + Generate vis ``uuid()``
+ 
++ TIMEUUID embeds a TIMETSAMP value
+    + Ex: 123jdn42-3d43-23d4-12m3-12nd4k5new32
+    + Sortable
+    + Generate via ``now()``
+ 
++ TIMESTAMP
+    + stores date and time
+    + 64-bit integer
+    + Milliseconds since Jan 1, 1970 at 00:00:00 GMT
+    + Displayed in cqlsh as yyy-mm-dd HH:mm:ssZ
+    + As literal in cqlsh is '1979-07-24 08:30:15'
+    
++ Blob
+    + Arbitrary bytes (no validation), expressed as hexadecimal
+
++ Boolean
+    + Stored internally as true or false
+
++ Counter
+    + 64-bit signed integer-only one counter column is allowed per table
+
++ Inet
+    + IP address string in IPv4 or IPv6 format
+    
+
+#### COPY
+Works with CSV files
+
++ Imports/exports CSV 
+```python
+COPY table1 (column1, column2, column3) FROM 'tabledata.csv';
+```
++ Header parameter skips the first line in the file
+```python
+COPY table1 (column1, column2, column3) FROM 'tabledata.csv'
+WITH HEADER=true;
+```
+#### SELECT
+Pulls data from a table
+
+```python
+SELECT * FROM table1;
+
+SELECT column1, column2, column3 FROM table1;
+
+SELECT COUNT(*) FROM table1;
+
+SELECT * FROM table1 LIMIT 10;
+```
+
+#### TRUNCATE
+Removing table data
+
++ Deletes all data from a table immediately and irreversibly
++ Truncate sends a JMX command to all nodes to delete SSTables that hold the data
++ If any of these nodes are down the command will fail
+
+```python
+TRUNCATE table1;
+```
+
+#### ALTER TABLE
+
++ Can change datatype of column, add columns, drop columns, rename columns and change table properties
++ BUT! You cannot alter the ``PRIMARY KEY columns``
+```python
+ALTER TABLE table1 ADD another_column
+text;
+
+ALTER TABLE table1 DROP another_column;
+```
+#### SOURCE
+Executes CQL Scripts
+
++ Execute a file containing CQL statements
++ Enclose file name in single quotes
++ Output for each statement appears in turn
+    + Example:
+
+```python
+SOURCE './myscript.cql';
+```
+
+### Fundamentals of an APache Cassandra Table
+
+#### Terminology
+Terms and definitions to get your head around
+
++ **Data model**:
+    + An abstract model for organizing elements of data
+    + In Apache Cassandra this is based on the queries you want to perform
+    
++ **Keyspace**:
+    + SImilar to relational schema-- outermost grouping of data
+    + All tables live inside a keyspace
+    + Keyspace is the container for replication
+    
++ **Table**:
+    + Grouped into keyspace
+    + Contain columns
+    
++ **Partition**:
+    + Row(s) of data that are stored on a particular node in your based on a partitioning strategy
+
++ **Row**:
+    + One or more CQL rows stored together on a partition
+ 
++ **Column**
+    + Similar to a column in a relational database
+    + **Primary key**:
+    + Used to access the data in a table and guwarantees uniqueness
+ 
++ **Partition Key**:
+    + Defines the node on which the data is stored
+ 
++ **Clustering Column**:
+     + Defines the order of rows within a partition
+     
+### Partitioning And Storage Structure
