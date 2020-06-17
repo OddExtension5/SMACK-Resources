@@ -19,7 +19,7 @@ Relational Overview, Cassandra Overview, Choosing a Distribution,
 + Queries are unpredicatble
 + Users are impatient
 + Data must be denormalized
-+ If data ? memory, you = history
++ If data > memory, you = history
 + Disk seeks are the worst
 
 #### Sharding is a Nightmare
@@ -32,9 +32,86 @@ Relational Overview, Cassandra Overview, Choosing a Distribution,
 + Adding shards requires manually moving data
 + Schema changes
 
+#### High Availability.. not really
+
++ Master failover.. who's responsible?
++ Multi-DC is a mess
++ Downtime is frequent
+`   + Change database settings (innodb buffer )
+    + Driver, power supply failures
+    + OS updates
+
+#### Summary of Failure
+
++ Scaling is a pain
++ ACID is naive at best
++ Re-sharding is a manual process
++ We're going to denormalize for performance
++ High availability is complicated, requires additional operational overhead
+
+### Cassandra Overview
+
+#### What is Apache Cassandra?
+
++ Fast Distributed Database
++ High Availability
++ Linear Scalability
++ Predictable Performance
++ No SPOF
++ Multi-DC
++ Commodity Hardware
++ Easy to manage operationally
++ Not a drop in replacement for RDBMS
+
+#### Hash Ring
+
++ No master / slave / replica sets
++ No config servers, zookerper
++ Data is partitioned around the ring
++ Data is replicated to RF=N servers
++ All nodes hold data and can answer queries (both reads & writes)
++ Location of data on ring is determined by partition key
+
+#### CAP Tradeoffs
+
++ Impossible to be both consistent and highly available during a network partition
++ Latency between data centers also makes consistency impractical
++ Cassandra chooses Availability & Partition Tolerance over Consistency
+
+#### Replication
+
++ Data is replicated automatically
++ You pick number of servers
++ Called "replication factor" or RF
++ Data is ALWAYS replicated to each replica
++ If a machine is down, missing data is replayed via hinted handoff
+
+#### Consistency Levels
+
++ Per query consistency
++ ALL, QUORUM, ONE
++ How many replicas for query to respond OK
+
+#### Multi-DC
+
++ Typical usage: clients write to local DC, replicates async to other DCs
++ Replication factor per keyspace per datacenter
++ Datacenters can be physical or logical
+
+### Choosing a Distribution
+
+#### The Write Path
+
++ Writes are written to any node in the cluster (coordinator)
++ Writes are writtten to commit log, then to memtable
++ Every write includes a timestamp
++ Memtable flushed to disk periodically (sstable)
++ New memtable is created in memory
++ Deletes are a special write case, called a "tombstone"
 
 
 ****************************************** THE END ***************************************************************
+
 
 ## DS201: DataStax Enterpise 6 Foundation of Apache Cassandra
 
