@@ -1,3 +1,41 @@
+## DS101: Introduction to Apache Cassandra
+
+Relational Overview, Cassandra Overview, Choosing a Distribution, 
+
+### Introduction to Relational Overview
+
+#### Medium Data
+
++ Fits on 1 machine
++ RDBMS is fine
+    + PostgreSQL
+    + MySQL
++ Supports hundreds of concurrent users
++ ACID makes us feel good
++ Scales vertically
+
+#### Third Normal Form Doesn't Scale
+
++ Queries are unpredicatble
++ Users are impatient
++ Data must be denormalized
++ If data ? memory, you = history
++ Disk seeks are the worst
+
+#### Sharding is a Nightmare
+
++ Data is all over the place
++ No more joins
++ No more aggregations
++ Denormalize all the things
++ Querying secondary indexes requires hiting every shard
++ Adding shards requires manually moving data
++ Schema changes
+
+
+
+****************************************** THE END ***************************************************************
+
 ## DS201: DataStax Enterpise 6 Foundation of Apache Cassandra
 
 CQL, Partitions, Clustering Columns, Application Connectivity, Node, Ring, Peer to Peer, Vnodes, Gossip, Snitch, Replication, Consistency,Hinted Handoff, Read Repair, Node Sync, Write Path, Read Path, Compaction, Advance Performance
@@ -454,6 +492,20 @@ ALTER TABLE mykeyspace.mytable WITH compaction = {
 
 *************************************************** THE END ****************************************************************
 
+## DS210: DataStax Enterprise 6 Operations with Apache cassandra
+
+Configuring Clusters, Cluster Sizing, Cassandra-STress, Linux Top Command, Linux dstat command, nodetool for Performance Analysis, System & Output Logs, JVM Garbage and Collection Logging, Adding/Removing Nodes, Bootstrapping, Replacing a Down Node,
+Leveled Compaction, Sized Tiered Compaction, Time Window Compaction, Repair, Nodesync, sstablesplit, Multi-DC Concepts, CQL Copy, sstabledump, sstableloader, SPark for Data Loading, DSE DSBulk, Backup FUndamentals, JVM Settings, Garbage COllections, Heap Dump, Tuning The Kernel, Hardware Selections, Cloud, Security Considerations, OpsCenter and Lifecycle
+
+
+
+
+
+
+
+
+**************************************** THE END *****************************************************************
+
 ## DS220: DataStax Enterprize 6 Practical Application Data Modeling with Apache Cassandra
 
 Data Modeling Overview, Relational Vs. Cassandra, Cassandra Table, Partition ANd Storage Structure, Clustering Columns, Denormalization, Table Features, Collections, UDTs, Counters, UDFs and UDAs, Conceptual Data Modelings, Application Workflow And Access Patterns, Logical Data Modeling, Analysis And Validation, Write Techniques, Read Techniques, Table/Key Optimization, Data Model Migration, Data Model-Anti Patterns, Data Modeling Use Cases
@@ -713,4 +765,219 @@ Terms and definitions to get your head around
 + **Clustering Column**:
      + Defines the order of rows within a partition
      
-### Partitioning And Storage Structure
+### Collections
+Group and store data together in a column
+
++ Collection columns are multi-values columns
++ Designed to store a small amount of data
++ Retireved in its entirely
++ Cannot nest a collection inside another collection -- unless you use FROZEN
+
+#### SET
+Creating and inserting with SET
+
++ types collection of unique values
++ Stored unordered, but retrieved in sorted ordered
+
+```python
+CREATE TABLE users (
+    id TEXT PRIMARY KEY,
+    fname TEXT,
+    lname TEXT,
+    emails set<text>
+);
+
+INSERT INTO users (id, fname, lname, emails)
+    VALUES('cass123', 'Cassandra', 'Dev', {'cass@dev.com', 'cassd@gmail.net'});
+    
+```
+#### LIST
+Altering a table and updating using LIST
+
++ Like SET -- collection of values in same cell
++ Do not need to be unique and can be duplicated
++ Stored in a particular order
+
+```python
+
+ALTER TABLE users ADD freq)des list<text>;
+
+UPDATE users SET freq_dest = ['Berlin', 'London', 'Paris'] WHERE id = 'cass123';
+```
+#### MAP
+Creating and inserting with MAP
+
++ Types collection of key-value pairs -- name and pair of typed values
++ Ordered by unique keys
+
+```python
+ALTER TABLE users ADD todo map<tmestamp, text>;
+
+UPDATE users SET todo = {'2018-1-1': 'create database', '2018-1-2':'load data and test', '2018-2-1': 'move to production' }
+WHERE id = 'cass123';
+```
+
+#### Using ``FROZEN`` in a Collection
+
++ If you want to nest datatypes, you have to use ``FROZEN``
++ Using ``FROZEN`` in a collection will serialize multiple components into a single value
++ Values in a ``FROZEN`` collection are treated like blobs
++ Non-frozen types allow updates to individual fields
+
+### User Defined Types (UDTs)
+Attach multiple data fields to a column
+
++ User-defined types group related fields of information
++ User-defined types (UDTs) can attach multiple data fields, each named and types, to a single column
++ Can be any datatype including collections and other UDTs
++ Allows embedding more complex data within a single column
+
+```python
+CREATE TYPE address (
+    street text, 
+    city text,
+    zip_code int,
+    phones set<text>
+);
+
+CREATE TYPE full_name (
+    first_name text,
+    last_name text
+ );
+ 
+ CREATE TABLE users (
+    id uuid,
+    name frozen <full_name>,
+    direct_reports set<frozen <full_name>>,
+    addresses map<text, frozen <address>>,
+    PRIMARY KEY ((id))
+ );
+```
+
+### Counter
+
++ Column used to store a 64-bit signed integer
++ Changed incrementally -- incremented or decremented
++ Values are changed using UPDATE
++ Need specially dedicated tables -- can only have primary key and counter columns
+
+ ```python
+ CREATE TABLE moo_counts (
+    cow_name TEXT,
+    moo_count counter,
+    PRIMARY KEY ((cow_name))
+);
+
+UPDATE moo_count
+SET moo_count = moo_count + 8
+WHERE cow_name = 'Betsy';
+```
+
+Some things to be aware of
+
++ Distributed system can cause consistency issues with counters in some cases
++ Cannot INSERT or assign values -- default values is "0"
++ Must be only non-primary key columns(s)
++ Not idempotent
++ Must use UPDATE command -- DataStax Enterprise rejects USING TIMESTAMP or USING TTL to update counter columns
++ Counter columns cannot be indexed or deleted
+
+### UDFs and UDAs
+
+#### User Defined Functions (UDFs)
+Creating UDFs
+
++ Write custom functions using JAVA and JavaScript
++ Use in SELECT , INSERT, and UPDATE statements
++ Function are only available within the keyspace where it is defined
+
++ Enables by changing the following settings in the ``cassandra.yaml`` file
+    + Java: Set ``enable_user_defined_functions`` to true
+    + Javascript and other custom languages: Set ``enables_scripted_user_defined_functions`` to true
+    
+#### User Defined Aggregates (UDAs)
+
++ Datastax Enterprize allows users to define aggregate functions
++ Functions are applied to data stored in a table as part of query result
++ The aggregate function must be created prior to its use in a SELECT statement
++ Query must only include the aggregate function istdelf -- no additional columns
+
+```python
+CREATE OR REPLACE
+    FUNCTION avgState ( state tuple<int, float> , val float)
+    CALLED ON NULL INPUT
+    RETURNS tuple<int, float>
+    LANGUAGE java
+    AS 'if ( val != null) {
+        state.setInt(0, state.getInt(0) + 1);
+        state.setFloat(1, state.getFloat(1)+val.floatValue());
+    }
+    return state;';
+    
+CREATE OR REPLACE
+    FUNCTION avgFinal ( state tuple<int>, float> )
+    CALLED ON NULL INPUT
+    RETURNS float
+    LANGUAGE java
+    AS 'float r = 0;
+    if (state.getInt(0) == 0) return null;
+        r = state.getFLoat(1);
+        r /= state.getInt(0);
+     return Float.valueOf(r);';
+     
+CREATE AGGREGATE
+    IF NOT EXISTS average ( float )
+    SFUNC avgState
+    STYPE tuple<int, float>
+    FINALFUNC avgFinal
+    INITCOND (0,0);
+```
+#### Querying with a UDF and UDA
+
++ The state function is called once for each row
++ The value returned by the state function becomes the new state
++ After all rows are processed, the optional final function is executed with the last state value as its arguments
++ Aggregation is performed by the coordinator
+
+```python
+SELECT average(avg_rating) FROM videos WHERE release_year = 2002 ALLOW FILTERING;
+SELECT average(avg_rating) FROM videos WHERE title = 'Planet of the Apes' ALLOW FILTERING;
+SELECT average(avg_rating) FROM videos WHERE mpaa_raing = 'G' ALLOW FILTERING;
+SELECT average(avg_rating) FROM videos WHERE genres contains 'Romance' ALLOW FILTERING;
+```
+
+### Conceptual Data Modeling
+Modelling your domain
+
++ Abstract view of your domain
++ Technology independent
++ Not specific to any database system
+
+#### Purpose of Conceptual Modeling
+
++ Understand your data
++ Essential objects
++ Constraints
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+********************************************** THE END ************************************************
+
+## DS330: DataStax Enterprise 6 Graph
