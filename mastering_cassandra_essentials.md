@@ -40,7 +40,7 @@
 + No foreign key constraints
 + Always exist within a keyspace
 
-```
+```python
 CREATE KEYSPACE essentials 
 WITH REPLICATION = {
         'class': 'SimpleStrategy',
@@ -68,7 +68,7 @@ SELECT * FROM movies    //wrong
 + Primary keys identigy rows
 + Composed of partition key and clustering key
 
-```
+```python
 CREATE KEYSPACE essentials
 WITH REPLICATION = {
         'class': 'SimpleStrategy',
@@ -130,7 +130,7 @@ CQL supports 2 kinds of collections: ``Maps``, ``Sets`` and ``Lists``. The types
 
 ##### Map
 
-```
+```python
 CREATE TABLE users (
       id text PRIMARY KEY,
       name text,
@@ -154,7 +154,7 @@ INSERT INTO users (id, names, favs)
 ##### Set
 A set is a (sorted) collection of unique values. You can define and insert a map with:
 
-```
+```python
 CREATE TABLE images (
       name text PRIMARY KEY,
       owner text,
@@ -177,7 +177,7 @@ UPDATE images SET tags = tags - { 'cat' } WHERE name = 'cat.jpg';
 A list is a (sorted) collection of non-unique values where elements are ordered by there position in the list.
 
 ```
-```
+```python
 CREATE TABLE plays (
     id text PRIMARY KEY,
     game text,
@@ -210,7 +210,7 @@ UPDATE plays SET scores = scores - [12, 21] WHERE id = '123-afde';
 #### User-Defined Types (UDT)
 Creating a new user-defined type is done using a ``CREATE TYPE`` statement.
 
-```
+```python
 CREATE TYPE phone (
         country_code int,
         number text,
@@ -253,7 +253,7 @@ INSERT INTO user (name, addresses )
 #### Tuples
 CQL also supports tuples types (where the elements can be of different types).
 
-```
+```python
 CREATE TABLE durations (
       event text,
       duration tuple<int, text>,
@@ -272,7 +272,7 @@ A tuple is always frozen (without the need of the frozen keyword) and it is not 
 + SASI ( SSTable Attached Secondary Index)
 + http://www.doanduyhai.com/blog/?p=2058
 
-```
+```python
 CREATE CUSTOM INDEX title ON movies_by_actor (title) USING
 'org.apache.cassandra.index.sasi.SASIIndex' WITH OPTIONS = { 'mode': 'CONTAINS'};
 
@@ -285,7 +285,7 @@ Secondary indexes are tricky to use and can impact performance greatly. The inde
 
 ``A general rule of thumb is to index a column with low cardinality of few values.``
 
-```
+```python
 CREATE TABLE cycling.rank_by_year_and_name (
     race_year int,
     race_name text,
@@ -341,7 +341,7 @@ SELECT * FROM cycling.rank_by_year_and_name WHERE rank = 1;
 
 **Static column**: A special column that is shared by all rows of a partition
 
-```
+```python
 CREATE TABLE cyclist_mv (
       cid UUID PRIMARY KEY,
       name text,
@@ -512,7 +512,7 @@ a user triggers a compaction on a given set of sstables.
 
 ### Java Driver
 
-```
+```java
 build.gradle
 
 apply plugin: 'java'
@@ -532,7 +532,7 @@ task cassandra(type: javaExec) {
   main = 'Cassandra'
 }
 ```
-```
+```java
 import com.datastax.driver.core.*;
 import java.util.UUID;
 
