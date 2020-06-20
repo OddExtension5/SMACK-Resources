@@ -426,3 +426,63 @@ FROM videos_by_tag;
 /home/ubuntu/node1/resources/cassandra/bin/nodetool getendpoints killrvideo video_by_tag 'cassandra'
 /home/ubuntu/node1/resources/cassandra/bin/nodetool getendpoints kilrvideo video_by_tag 'datastax'
 
+```
+
+## Exercise 9 - VNodes
+
+In this exercise, you will
+   + Understand how VNodes support partition distribution
+   
+THe ring of tokens and nodes make Apache Cassandra scalable and fault-tolerant, but managing partitions on solely physical nodes causes problems. For example, when a physical node goes down, it is necessary to redistibute partitions. This is where virtual nodes (or VNodes) comes in. VNodes help even the load when redistributing partitions across physical nodes.
+
+```python
+#1. check running status of nodes
+
+/home/ubuntu/node1/resources/cassandra/bin/nodetool stopdaeom
+
+#2. let's investigate the /home/ubuntu
+
+```
+
+## Exercise 10 - Gossip
+
+In this exercise, you will
+   + Understand how Apache Cassandra uses
+   + Understand how gossip information propagates thorugh a cluster
+   + Understand how a gossip exchange works
+   
+In a fully distributed system such as Apache Cassandra, there is no single repository that contains the state of all nodes in the cluster. Clearly, such a repository would be a single point of failure. Instead, Apache Cassandra uses the Gossip protocol to distribute nodes status amongst its peers
+   
+```python
+
+#1. Execute this command
+
+/home/ubuntu/node1/resources/cassandra/bin/nodetool gossipinfo
+
+#2. Rerun your nodetool gossipinfo command a few times and notice the heartbeat values increasing for both nodes
+
+#3. Run for node2
+nodetool gossipinfo
+
+#4. terminate your second node
+/home/ubuntu/node2/resources/cassandra/bin/nodetool stopdaemon
+
+#5. Check the gossipinfo on node1. Notice node2's gossip information is still present as it is part of the clutser, but its 
+# STATUS state is shutdown
+
+
+SELECT peer, data_center, host_id, preferred_ip, rack, release_version, rpc_address, schema_version
+FROM system.peers;
+
+```
+
+## Exercise 11 - Snitches
+
+In this exercise, you will:
+   + Understand how to make Apache Cassandra aware of the cluster topology using Snitches
+ 
+To improve fault-tolerance distribuited systems consider the topology of the cluster into account. Apache Casssandra uses this topological information to replicate data across a geological diverse area - which increases data availability.
+
+```python
+
+```
