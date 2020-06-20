@@ -337,10 +337,92 @@ Unlike drain, flush allows further writes to occur.
 
 ```
 
+## Exercise 7 - Ring
 
+In this exercise, you will:
+  + Understand the Apache Cassandra token ring
+  + Create a two-node cluster
+  
+One of the secrets to Apache Cassandra performance is the use of a ring that keeps track of tokens. This ring enbales Apache Cassandra to know exactly which nodes contain which partitions. This ring also eliminates any single points of failiure.
 
+```python
+#1. shut down the current node
+/home/ubuntu/node/resources/cassandra/bin/nodetool stopdaemon
 
+#2. delete the /home/ubuntu/node folder 
+cd /hone/ubuntu
+rm -rf node
 
+#3. make a two-node cluster
+tar -xf dse-6.0.0-bin.tar.gz
+mv dse-6.0.0 node1
+labwork/config_node 1
 
+tar -xf dse-6.0.0-bin.tar.gz
+mv dse-6.0.0 node2
+labwork/config_node 2
 
+#4. open the /home/ubuntu/node2/resources/cassandra/conf/cassandra.yaml
+vi cassandra.yaml
+
+#5. change initial_token
+initial_token: 9223372036854775807
+
+#6. start the first node
+/home/ubuntu/node1/bin/dse cassandra
+
+#7. Check status of the node
+/home/ubuntu/node1/resources/cassandra/bin/nodetool status
+
+#8. Start second node
+/home/ubuntu/node2/bin/dse cassandra
+
+#9. Check for status
+/home/ubuntu/node1/resources/cassandra/bin/nodetool status
+
+#10. create table
+
+CREATE KEYSPACE killrvideo
+WITH REPLICATION = {
+	'class': 'SimpleStrategy',
+	'replication_factor': 1
+};
+
+USE killrvideo;
+
+CREATE TABLE videos (
+	id uuid,
+	added_date timestamp,
+	title text,
+	PRIMARY KEY ((id))
+);
+
+COPY videos(id, added_date, title)
+FROM '/home/ubuntu/labwork/data-files/videos.csv'
+WITH HEADER=TRUE;
+
+CREATE TABLE videos_by_tag (
+	tag text,
+	video_id uuid,
+	added_date timestamp,
+	title text,
+	PRIMARY KEY ((tag), added_date, video_id ))
+	WITH CLUSTERING ORDER BY (added_date DESC);
+	
+COPY videos_by_tag(tag, video_id, added_date, title)
+FROM './home/ubuntu/labwork/data-files/videos-by-tag.csv'
+WITH HEADER = TRUE;
+
+#11. let's determine which nodes own which partitions in the videos_by_tag table
+
+SELECT token(tag), tag
+FROM videos_by_tag;
+
+#12. check which nodes own which token ranges
+/home/ubuntu/node1/resources/cassandra/bin/nodetool ring
+
+#13. check for which partitions resided on which node
+
+/home/ubuntu/node1/resources/cassandra/bin/nodetool getendpoints killrvideo video_by_tag 'cassandra'
+/home/ubuntu/node1/resources/cassandra/bin/nodetool getendpoints kilrvideo video_by_tag 'datastax'
 
