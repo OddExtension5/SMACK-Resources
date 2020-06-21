@@ -1023,7 +1023,7 @@ SELECT average(avg_rating) FROM videos WHERE mpaa_raing = 'G' ALLOW FILTERING;
 SELECT average(avg_rating) FROM videos WHERE genres contains 'Romance' ALLOW FILTERING;
 ```
 
-### Conceptual Data Modeling
+### Conceptual Data Modeling (CDM)
 Modelling your domain
 
 + Abstract view of your domain
@@ -1036,25 +1036,167 @@ Modelling your domain
 + Essential objects
 + Constraints
 
+#### Advanjtages of Conceptual Modeling
+
++ Collaboration (anyone can involved technical + non-technical)
 
 
+**Attribute Types**: Fields to store data about an entity or relationship
+    + **Key Attributes**: Identifies an object
+    + **Composite Attributes**: Groups related attributes together
+    + **Multi-valued Attributes**: Attribute stores multiple values per entity (double circles)
+    
+**Entity-Relationship (ER) Model**: Entity Types - Relationships Types - Attribute Types
+
+#### Cardinality
+Relationships between entities
+
++ Number of times an entity can/must participate in the relationship
++ Other possibilities:
+    + 1-n
+    + 1-1
+    + m-n
+
+#### Weak Entity Types
+
++ Cannot exists without an identifying relationship to a strong entity type
++ If video disappears then enconding of video also disappears
 
 
+### Query-Driven Data Modeling
+
+| Conceptual Data Mdel (ERD)  & Access Patterns (Queries) | ---> | Mapping Rules & Patterns | ---( Chebotko Diagram ) --> | Logical Data Model |
+
+#### Chebotko Diagrams
+
++ Graphical representation of Apache Cassandra database schema
++ Documents the logical and physical data model
+
+#### Chebotko Diagram Notation
+Table representation
+
++ Logical-level shows column names and properties
++ Physical-level also shows the column data type
+
+### Data Modeling Principles
+Apache Cassandra Principles
+
++ Know your data
++ Know your queries
++ Nest data
++ Duplicate data
+
+### Single Partition Per Query -- Ideal
+Schema design organizes data to efficiently run queries
+
++ Most efficient access pattern
++ Query accesses only one partition to retrieve results
++ Partition can be single-row or multi-row
+
+### Partition+ Per Query -- Acceptable
+Schema design organizes data to efficinelty run queries
+
++ Less efficient access pattern but not necessarily bad
++ Query needs to access multiple partitions to retrieve results
+
+### Table Scan/Multi-Table Scan -- Anti-Pattern
+
++ Least efficient type of query but may be needed in some cases
++ Query needs to access all partitions in a table(s0 to retrieve results
 
 
+### Logical Data Modeling
+
+#### Nest Data
+Data nesting is the main data modeling technique
+
++ Nesting organizes multiple entities into a single partition
++ Supports partition per query data access
++ Three data nesting mechanisms:
+    + Clustering columns - multi-row partitions
+    + Collection columns
+    + User-defined type columns
 
 
+#### Nest Data -- Clustering Columns
+Clustering column -- primary data nesting mechanism
+
++ Partition key identifies an entity that other entities will nest into
++ Values in a clustering column identify the nested entities
++ Multiple clustering columns implement multi-level nesting
+
+#### Nest Data -- UDT
+User-defined type -- secondary data nesting mechanism
+
++ Representing one-to-one relationships, but can use in conjunction with collections
++ Easier than working with multiple collection columns
+
+#### Mapping Rules
+For query-driven methodology
+
++ Mapping rules ensure that a logical data model is correct
++ Each query has a corresponding table
++ Tables are designed to allow queries to execute properly
++ Tables return data in the correct order
+
+#### What are the rules?
+
+1. Entities and relationships
+2. Equality search attributes
+3. Inequality search attributes
+4. Ordering attributes
+5. Key attributes
+
+### Physical Data Modeling
+
+#### Creating data types and creating tables
+
+Adding data types and creating tables
 
 
+#### Loading Data Methods
 
++ COPY command
++ SSTable loader
++ DSE Bulk Loader
 
+#### COPY Command
 
++ **COPY TO** exports data from a table to a CSV file
++ **COPY FROM** imports data to a table from a CSV file
++ The process verifies the PRIMARY KEY and updates existing records
++ If **HEADER = false** is specified the fields are imported in determinstic order
++ When column names are specified, fields are imported in that order -- missing and empty fields set to null
++ Source cannot have more fields than the target table -- can have fewer fields
 
+#### SSTable Loader
 
-
-
-
-
++ Bulk load external data into a cluster
++ Load pre-existing SSTables into
+    + an existing cluster or new cluster
+    + a cluster with the same number of nodes or a different number of nodes
+    + a cluster with a different replication startegy or partitioner
+    
+ ``python
+ sstableloader -d 110.82.155.1 /var/lib/cassandra/data/killrvideo/users/
+ ``
+ 
+ #### DSE Bulk Loader
+ 
+ + Moves Cassandra data to/from files in teh file system
+ + Uses both CSV or JSON formats
+ + Command-line interface
+ + Used for loading large amounts of data fast
+ 
+ ```python
+ dsbulk load -url file1.csv -k ks1 -t table1
+ ```
+ 
+ 
+ ### Analysis and Validation
+ 
+ 
+ 
 ********************************************** THE END ************************************************
 
 ## DS330: DataStax Enterprise 6 Graph
