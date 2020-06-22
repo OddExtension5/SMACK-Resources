@@ -1,3 +1,5 @@
+# Learning Path : Cassandra Architect
+
 ## DS101: Introduction to Apache Cassandra
 
 Relational Overview, Cassandra Overview, Choosing a Distribution, 
@@ -1196,7 +1198,207 @@ Adding data types and creating tables
  ### Analysis and Validation
  
  
+ ### Write Techniques
  
-********************************************** THE END ************************************************
+ #### Data Consistency with Batches
+ Schema data consistency refers to the correctness of data copies
+ 
+ + With data duplication, *you* need to worry about and handle consistency
+ + All copies of the same data in your schema should have the same values
+ + Adding, updating, or deleting may require multiple INSERTs, UPDATEs, and DELETEs
+ + Logged batches were built for maintaining consistency
+ + Have a documented plan
+ 
+ #### Batch 
+ Example of using logged batch for data consistency
+ 
+ + To insert a new video:
+ ```python
+ 
+ BEGIN BATCH
+    INSERT INTO videos (video_id, ..) VALUES (1, ..);
+    INSERT INTO videos_by_title (title, videos_id, ...) VALUES ('Jaw', 1, ..)
+ APPLY BATCH;
+ ```
+ 
+ + To update the title of a video:
+```python
+BEGIN BATCH
+    UPDATE videos SET title = 'Jaws' WHERE video_id = 1;
+    INSERT INTO videos_by_title (title, videos_id, ...) VALUES ('Jaws', 1);
+    DELETE FROM videos_by_title WHERE title = 'Jaw' AND videos_id = 1;
+APPLY BATCH;
+```
+#### More on Batch
 
-## DS330: DataStax Enterprise 6 Graph
++ Written to a log on the coordinator node and replicas before execution
+    + Batch succeeds when the writes have been applied or hinted
+    + Replicas take over if the coordinator node fails mid-batch
++ Gets up part of the way to ACID transactions
+    + No need for a roolback implementation since Cassandra will ensure that the batch succeeds
+    + But no batch isloation -- clients may read updated rows before the batch completes
+ 
+ #### Misconceptions about Batches
+ 
+ + Not intended for bulk loading
+    + Rarely increases performance of data load
+    + Can overwork the coordinator and cause performance bottlenecks or other issues
+ + No ordering for operations in batches -- all writes are executed with the same timestamp
+ 
+ #### Lighweight Transactions
+ Compare and Set (CAS) Operations with ACID Properties
+ 
+ + Does a read to check a condition, and performns the INSERT / UPDATE/ DELETE if the condition is true
+ + Essentially an ACID transaction at the partition level
+ + More expensive than regular reads and writes
+ 
+ ```python
+ # LWT
+ INSERT INTO users (user_id, first_name, last_name, email, password)
+ VALUES ('12sw2', 'Sushil', 'Singh', 'sushil@gmail.com', '123455')
+ IF NOT EXISTS;
+ 
+ UPDATE users
+ SET reset_token = null, password = 'trustno1'
+ WHERE user_id = 'sushil'
+ IF reset_token = 123efr-1qjwj-12-1k3ne-111d;
+ ```
+ 
+ ### Read Techniques
+ 
+ #### Secondary Indexes
+ 
+ + An index on a column that allows a table to be queried on a column that is usually prohibited
+    + Table structure is not affected
+    + Table partitions are distributed across nodes in a cluster based on a partition key
+ + Can be created on any column including collections except counter and static columns
+ 
+ + Secondary index creates additional data structure on nodes holding table partitions
+    + Each 'local index' indexes values in rows stored locally
+    + Query on an indexed column requires accessing local indexes on all nodes -- expensive
+    + Query on a partition key and indexed column requires accessing local index on nodes -- efficient
+ 
+ + Clinet sends a query request to a coordinator
+ + Coordinator sends the request to all nodes -- partition key is not known
+ + Each node searches its local index -- returns results to corrdinator
+ + Coordinator combines and returns results
+ 
+ #### When Secondary Indexes Are Used
+ 
+ |          When to Use                                                          |     When Not to Use                      |
+ |-------------------------------------------------------------------------------|------------------------------------------|
+ | Low cardinality columns                                                       |   High Cardniamlity columns              |
+ | When prototyping or smalled datasets                                          |   With tables that use a counter column  |
+ | For search or both a partition key and an indexed column in large partition   |   Requently updates or deletes columns   |
+ 
+ #### Materialized Views
+ 
+ + A database object that stores query results
+ + Apache Cassandra build a table from another table's data
+    + Has a new primary key and new properties
+  
+  
+ + Secondary indexes are suited for low cardinality data
+ + Materialized views are suited for high cardinality data
+  
+ + The columns of the source table's primary key must be a part of the materialized view's primary keu
+ + Only one new column can be added to the materialized view's primary key
+    + Static columns are not allowed
+  
+  ```python
+CREATE MATERIALIZED VIEW user_by_email
+AS SELECT first_name, last_name, email
+FROM users
+WHERE email IS NOT NULL AND user_id IS NOT NULL
+PRIMARY KEY (email, user_id);
+```
++ **AS SELECT**: identifies the columns copied from the base table to the materialized view
++ **FROM**: identifies the source table from where the data is copied
++ **WHERE**: must include all primary key columns IS NOT NULL so that only rows with data for all the primary key columns are copied to the materialized view
++ Specification of the primary key columns is crucial
+    + The source tables USERS uses `id` as its primary key thus `id` must be present in the materialzied view's primary key
+ 
+
+#### MV Caveats
+Be aware of the following
+
++ Data can only be written to source tables not materialized views
++ Materialized views are asynchronously updated after inserting data into the source table -- materlized views update is delayed
++ Apache Cassandra performs a read repair to a materialized view only after updating the source tables
+
+#### Data Aggregation
+Bulit-in function provide some summary form of data
+
+SUM, AVG, COUNT, MIN, MAX
+
+
+#### How to do Data Aggregation
+
++ Update data aggregates on the fly in Cassandra
+    + Same technique for linearizable transactions -- lightweight transactions
+    + Counter type
+
++ Implement data aggregation on client-side
++ **Use Apache Spark** -- near real-time batch aggregation
++ **Use Apache Solr** -- Stats component
+
+```python
+UPDATE ratings_by_videos
+SET num_ratings = num_ratings + 1;
+    sum_ratings = sum_ratings + 5
+
+WHERE videos_id = 1234er-1bsnd-2j3nd-1ndj32;
+```
+
+### Table/Key Optimizations
+
+#### Surrogate Keys -- Characteristics
+
++ Conflict-free uniqueness
++ Immutable
++ Uniformity
++ Compactness
++ Performance
+
+#### Table Optimizations
+Ways to improve tables
+
++ Splitting partitions -- size manageabliity
++ Vertical partitioning -- speed  [Breaking a table into multiple tables]
++ Merging partitions and tables -- speed and eliminate duplication [Introduce a new partition key]
++ Adding columns -- speed
+
+### Data Model Anti-pattern
+
+#### Data Modeling Anti-Pattern
+
+```An anti-pattern is a common response to a recurring problem that is usually ineffective and risks being highly counterproductive```
+
+**What you should avoid**
+
+#### Query Specific Anti-Patterns
+What can go wrong at the query level?
+
++ Queries that do whole cluster or large table scans are expensive -- modify your data model to support that query
+    + In the event you do want to touch all/most tables in a query might be an awesome use case for DSE Analytics
+    
++ Layering ``IN`` clauses to get a particular result is non-performant -- modify you dara model to support that query
++ Queries that requires reads before wites excessively are expensive -- do not always resort to lightweight transactions, these should be used sparingly
++ ALLOW FILTRING is expensive -- if you using more than in an extreme corner case, create a table to support query instead
+    + If you KNOW the query is restricted to a single partition, you're okay
+
+#### Table Specific Anti-Patterns
+What can you improve at the table level?
+
++ Secondary indexes have their uses RARELY --- if you need thses excessively create tables that support these queries
++ Use of non-frozen collections is a huge performnace hit -- ensure your collection data types are created properly
++ Use of String to represent dates and timestamps -- use time, timestamp or date (the right tool for the job)
+
+#### Keyspace Level Anti-Patterns
+How do you improve keyspace level performance?
+
++ Not using TTLs or deletes can cause tombstones to build up
++ If you are considering increasing read timeouts you should see how changing your data model can improve performance
+
+
+********************************************** THE END ************************************************
