@@ -6,7 +6,7 @@
 2. Cassandra uses a master/slave architecture.
       a. True  b. False
 
-3. Cassandra supporta multiple datacenters out of the box
+3. Cassandra supports multiple datacenters out of the box
       a. True  b. False
       
 4. Which of the following statements about Cassandra is false?
@@ -68,7 +68,7 @@
 4. Cassandra does not do any writes or deleted in place
       a. True b. False
 
-5. SSTbales in Cassandra are *nott* immutable
+5. SSTables in Cassandra are *not* immutable
       a. True b. False      
 
 6. Compaction is the process of:
@@ -77,13 +77,13 @@
       c. Merging Memtables into large Memtabkes
       d. All of the above
 
-7. "Last write wins" uses wht to determine what data to return to client?
+7. "Last write wins" uses what to determine what data to return to client?
       a. Tombstones
       b. Timestamps
       c. Compaction
       d. Coordinator
 
-8. WHich are features of an open source contribution?
+8. Which are features of an open source contribution?
       a. Bleeding edge features
       b. Great for hacking
       c. Support using IRC or mailing lists
@@ -121,7 +121,7 @@
 5. Partition key columns are optional if you have clustering columns.
       a. True      b. False
 
-6. What benefits do Clustering columns provide?
+6. What benefits do Clustering Columns provide?
       a. Reading sorted data is a matter of seeking the disk head once.
       b. They allow partitions to be spread over several drives.
       c. You can change the clustering criteria on a table at any time.
@@ -279,4 +279,217 @@
       c. The input partitions are not liable candidates for compaction.
       d. The input partition segments are made up of mostly INSERT operations.
  
+**************************************** SET-4 **************************************
+
+1. JMX stands for
+     a. Java Managed Extension
+     b. Java Management Extension
+     c. Java Manipulated Extension
+     d. None of the above
  
+2. How many compaction strategies are present for columnfamily
+     a. 5
+     b. 3
+     c. 2
+     d. 4
+ 
+3. What is the default value of AllowAllAuthorizer
+     a. Kerberos authorization
+     b. SSH authorization
+     c. No authorization ``
+     d. Password authorization
+
+4. What is the default value of caching option of CREATE TABLE command in CQL 3
+     a. none
+     b. rows_only
+     c. keys_only ``
+     d. all
+     
+5. Which nodetool command option is used to specify column family for a snapshot
+      a. -cf ``
+      b. -c
+      c. -f
+      d. -family
+ 
+6. Which of the following is not a performance management tool
+      a. iostat
+      b. dstat
+      c. cmstat
+      d. None of these ``
+ 
+7. What is the default value of cross_node_timeout
+      a. 0
+      b. 1.0
+      c. false ``
+      d. true
+ 
+8. What is the minium JVM version required by Cassandra
+      a. 1.5
+      b. 1.4
+      c. 1.3
+      d. 1.6 ``
+      
+9. Which directory contains the commit log file in Cassandra
+      a. conf
+      b. commit log ``
+      c. data
+      d. lib
+      
+10. WHat is the default port for thrift client
+      A. 9160.0 ``
+      b. 7001.0
+      c. 7000.0
+      d. 9000.0
+  
+11. Which Cassandra tool is used to show statistics on node
+      a. toolnode
+      b. nodetool ``
+      c. nodetstatistics
+      d. statisticsnode
+   
+12. Which cloud platform is not supported by Cassandra
+      a. GCP
+      b. Azure
+      c. Rackspace
+      d. None of these ``
+   
+13. What is usually suggested replication factor for Cassandra
+      a. 1
+      b. 2
+      c. 3 ``
+      d. 4
+      
+14. What data type is applied an MD5 hash by random partitioner
+      a. BigIntegerToken ``
+      b. Integer
+      c. BigInteger
+      d. IntegerToken
+      
+15. What is a node in Cassandra
+      a. New server added
+      b. New hardware added
+      c. New Cassandra instance ``
+      d. None of these
+      
+16. Which company did Cassandra was primarliy developed in
+      a. Facebook ``
+      b. Apache
+      c. Google
+      d. Amazon
+   
+17. What value can be given to commit_log_sync
+      a. periodic only
+      b. batch only
+      c. either periodic or batch ``
+      d. None of these
+   
+18. Which is the least verbose logging level in Cassandra
+      a. trace  ``
+      b. fatal
+      c. debug
+      d. error
+   
+19. What is the default action of Cassandra when a disk fails
+      a. error is ignored
+      b. stop Gossip
+      c. best efforts are given ``
+      d. NOT
+      
+20. What is the deafult authentication for Cassandra
+      a. AllowAllAuthenticator ``
+      b. AllAuthenticator
+      c. NoAuthenticator
+      d. NOT
+   
+21. What is the default password storing format in password.properties file
+      a. MD5 encryption
+      b. DES encryption
+      c. plaintext ``
+      d. NOT
+   
+22. How does Murmur3Partitioner works
+      a. Order as per US English value
+      b. Ordered keys as per byte value
+      c. Fast hash-based partitioner ``
+      d. NOT
+   
+23. Which directory contains the data files in Cassandra
+      a. interface
+      b. conf
+      c. data ``
+      d. lib
+      
+24. What should be inspected first when Cassandra is moving slow but operating system is responding on a node
+      a. Check network connectivity
+      b. Chech GC ``
+      c. Check free memeory size
+      d. Check system's responsiveness
+   
+25. Which of the following assumes the topology of network by the second octet of a node's IP address
+      a. SimpleStrategy
+      b. Rack Inferring ``
+      c. PeroprtyFileSnitch
+      d. DynamicSnitch
+      
+26. Whcih configuration file is used by log4J in Cassandra
+      a. server-log4j.properties
+      b. log4j.properties
+      c. log4j-cassandra.properties
+      d. log4j-server.properties ``
+
+27. What is the essential requirement for using permissions_validity_in_ms
+      a. Authorizer ``
+      b. AllowAllAuthorizer
+      c. Murmur3Partitioner
+      d. CollatingOPP
+  
+28. What is the deafult poer for secured internode communication
+      a. 8080.0
+      b. 7001.0 ``
+      c. 443.0
+      d. 7000.0
+      
+27. Which term is used to refer to mapping of a node to physical location in network
+      a. gossip
+      b. slice
+      c. snap
+      d. snitch ``
+  
+28. What does hot spot refers to
+      a. Processing capacity
+      b. Storage Capacity
+      c. Inter-node communication
+      d. Query Pattern ``
+      
+29. What is the default limit of keys after which MemTables are flushed to disk
+      a. 256
+      b. 64
+      c. 32
+      d. 128 ``
+  
+30. What is the default value of num_tokens
+      a. 64
+      b. 256 ``
+      c. 512
+      d. 128
+      
+31. How many concurrent reads are allowed in Cassandra by default
+      a. 128
+      b. 64
+      c. 16
+      d. 32 ``
+      
+32. What is the placement startegy for System Keyspace
+      a. NetworkTopolgyStartegy
+      b. SimpleStrategy
+      c. LocalStartegy ``
+      d. Depends on partitioner
+  
+33. What is the deafult log level used by Log4J in Cassandra
+      a. INFO ``
+      b. DEBUG
+      c. WARN
+      d. ERROR
+
+
+
