@@ -449,43 +449,43 @@
       c. 443.0
       d. 7000.0
       
-27. Which term is used to refer to mapping of a node to physical location in network
+29. Which term is used to refer to mapping of a node to physical location in network
       a. gossip
       b. slice
       c. snap
       d. snitch ``
   
-28. What does hot spot refers to
+30. What does hot spot refers to
       a. Processing capacity
       b. Storage Capacity
       c. Inter-node communication
       d. Query Pattern ``
       
-29. What is the default limit of keys after which MemTables are flushed to disk
+31. What is the default limit of keys after which MemTables are flushed to disk
       a. 256
       b. 64
       c. 32
       d. 128 ``
   
-30. What is the default value of num_tokens
+32. What is the default value of num_tokens
       a. 64
       b. 256 ``
       c. 512
       d. 128
       
-31. How many concurrent reads are allowed in Cassandra by default
+33. How many concurrent reads are allowed in Cassandra by default
       a. 128
       b. 64
       c. 16
       d. 32 ``
       
-32. What is the placement startegy for System Keyspace
+34. What is the placement startegy for System Keyspace
       a. NetworkTopolgyStartegy
       b. SimpleStrategy
       c. LocalStartegy ``
       d. Depends on partitioner
   
-33. What is the deafult log level used by Log4J in Cassandra
+35. What is the deafult log level used by Log4J in Cassandra
       a. INFO ``
       b. DEBUG
       c. WARN
