@@ -33,7 +33,7 @@
 7. b. False
 8. a. 2-4 Terabytes
 9. b. False
-10. b. 128
+10. c. 256
 11. a. num_tokens
 12. b. False
 13. b. False
@@ -59,3 +59,41 @@
 33. a. More optimal disk usage, b. Faster reads, d. Less memory pressure
 34. b. false
 35. d. The input partition segments are made up of mostly INSERT operations.
+
+**************************** SET-4 ***************************************************************
+
+1. b. Jaba Management Extension
+2. c. 2
+3. c. No authorization
+4. c. keys_only
+5. a. -cf
+6. d. None of these
+7. c. false
+8. d. 1.6
+9. b. commit log
+10. a. 9160.0
+11.  b. nodetool
+12. d. None of these
+13.  c. 3
+14. a. BigIntegerToken
+15. c. New Cassandra instance
+16. a. Facebook
+17. c. either periodic or batch
+18. a. trace
+19. c. best efforts are given
+20. a. AllowAllAuthenticator
+21. c. plaintext
+22. c. Fast hash-based partitioner
+23. c. data
+24. b. Chech GC
+25. b. Rack Inferring
+26. d. log4j-server.properties
+27. a. Authorizer
+28. b. 7001.0
+29. d. snitch
+30. d. Query Pattern
+31. d. 128
+32. b. 256
+33. d. 32
+34. c. LocalStartegy
+35. a. INFO
