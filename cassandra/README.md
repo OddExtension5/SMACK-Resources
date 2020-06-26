@@ -1,4 +1,4 @@
-# SMACK Resources
+# Cassandra Learning and Certification Resources
 
 ## File Structure
 
