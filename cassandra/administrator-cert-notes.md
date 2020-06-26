@@ -1,7 +1,5 @@
 # Learning Path : Apache Cassandra 3.x Administrator Associate Certification
 
-# Apache Cassandra 3.x Developer Associate Certification
-
 ## DS101: Introduction to Apache Cassandra
 
 Relational Overview, Cassandra Overview, Choosing a Distribution, 
