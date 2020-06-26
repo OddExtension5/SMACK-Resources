@@ -26,11 +26,11 @@ Mesos cluster consists of Master nodes and Slave nodes. Master node provide info
 #### Akka
  Akka is an open source tool developed based on Actor Model to help developer build concurrent and distributed applications. In SMACK Stack, Akka is used to create Actors and each Actor carries out a specific task. Actors interact with each other using messages
  
-#### Cassandra
+#### [Cassandra](https://github.com/OddExtension5/SMACK-Resources/tree/master/cassandra)
  
 Cassandra is a distributed NoSQL database to store a large amount of data in several nodes.
 
-#### Kafka
+#### [Kafka](https://github.com/OddExtension5/SMACK-Resources/tree/master/kafka)
  
 Kafka is an open source distributed streaming platform based on Publish – Subscribe model. Producer publishes stream data to Kafka topics and Consumer subscribes to these topic to receive and process data produced to them. In SMACK Stack, Kafka is used to temporarily store data from various sources and then distribute to other components of the system 
 
