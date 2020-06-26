@@ -16,6 +16,8 @@ The aim of SMACK stack is to create an ideal enviroment with necessary tools and
 
 Mesos cluster consists of Master nodes and Slave nodes. Master node provide information about available resources of Cluster to the Framework and distribute works to Slave nodes. On the other hand, Slave nodes is responsible for completing assigned works. Normally, the operation of Mesos can be described with 4 steps below:
 
+![Mesos](https://github.com/OddExtension5/SMACK-Resources/blob/master/assets/Mesos-Overview.png)
+
 1. Slave sends information about its available resources to Master (Eg: Slave 1 has 4 CPU and 16 GB RAM can be used)
 2. Master sends information about resources that cluster can provide to Frameworks
 3. Scheduler of Framework responds to Master with the tasks to be processed (Ex: Task 1 needs 1CPU, 3GB RAM; Task 2 needs2CPU, 8GB RAM)
@@ -40,11 +42,13 @@ For more details: [Click Here](https://www.hpe.com/us/en/insights/articles/under
 
 Lambda architecture is a data processing architecture introduced by Nathan Marz. It takes the advantages of both batch processing and stream-processing to handle a large amount of data effectively. Lambda architecture consists of 3 layers: Batch layer, Speed layer, and Serving layer.
 
-![Image](https://ibb.co/M9mSDMY)
+![Image](https://github.com/OddExtension5/SMACK-Resources/blob/master/assets/lmbda.png)
 
 Batch layer acts like a ‘Data lake’ to store all collected data and process this data with batch processing (we need to pre-define the batch interval, which is the time between two batch processing, such as 30 mins, 3 hours or 1 day…). The advantage of using Batch processing in Lambda Architecture is because the collected data can be duplicated or contains unnecessary information. Therefore, we need an intermediate step to preprocess and clean the raw data. Batch processing can also address the late arrival problem caused by transmission disruption or being collected much later than the time of posting. In addition, the result of each Batch processing is updated frequently, thereby improving the accuracy of the system and fixing the incorrect result of the previous Real-time processing.
 
 Speed layer is responsible for processing data in real time, thereby accomplishing the Batch layer as Batch layer has long latency and thus unable to process newly recieved data. However, the result of Speed layer is usually not as good as Batch layer due to limited processing time. At this layer, we can use a number of open source tools such as Apache Storm, Apache Spark or Apache Flume,…
+
+![image22](https://github.com/OddExtension5/SMACK-Resources/blob/master/assets/lambda22.png)
 
 Serving layer is responsible for storing outputs of Batch layer and Speed layer, therefore we can use database tools for this layer such as Apache Cassandra, MongoDB or ElasticSearch,…
 
