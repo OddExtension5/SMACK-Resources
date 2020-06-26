@@ -38,7 +38,6 @@
 ## Exams Passed
 
 Online Cert Exam: Apache Cassandra 3.x Developer Associate Certification <br/>
-Registration #: 14104 <br/>
 Purchased: May 26, 2020, 18:58 <br/>
 Status: Completed
 
