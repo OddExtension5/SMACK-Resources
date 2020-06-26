@@ -1,5 +1,16 @@
 # SMACK Resources
 
+## File Structure
+
+1. ``DS201 Exercies.md``: Contains all excersie solution of Cassandra Developer Path
+2. ``administrator-cert-notes.md``: Notes of DataStax Academy Cassandra Adminsitrator Learning Path  ``[Working]``
+3. ``developer-cassandra-notes``: Notes of DataStax Academy Cassandra Developer Learning Path
+4. ``mastering_cassandra_essentials.md``: Notes of Mastering Cassandra Essentials by Tim Berglund
+5. ``ques-on-cassandra.txt`` : Contains some important question and all questions of DataStax Academy
+6. ``ans-on-cassandra.txt``: Answers of all the question in the ``ques-on-cassandra.txt`` file.
+7. ``cassandra_data_types.md``: Important data types with examples
+8. ``cassandra-with-java.md``: Java Driver Examples of Cassandra ``[Working]``
+
 ## Cassandra
 
 1. [Apache Cassandra 3.x Doc](https://docs.datastax.com/en/cassandra-oss/3.0/)
