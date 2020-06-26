@@ -34,3 +34,12 @@
 2. [Cassandra 3.x High Availability - Second Edition](https://learning.oreilly.com/library/view/cassandra-3x-high/9781786462107/)
 3. [Mastering Apache Cassandra 3.x - Third Edition](https://learning.oreilly.com/library/view/mastering-apache-cassandra/9781789131499/)
 
+
+## Exams Passed
+
+Online Cert Exam: Apache Cassandra 3.x Developer Associate Certification <br/>
+Registration #: 14104 <br/>
+Purchased: May 26, 2020, 18:58 <br/>
+Status: Completed
+
+Link:  https://academy.datastax.com/certs/lookup/34a66d10-80ed-45a9-9f8f-c14b6a9a7295
