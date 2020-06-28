@@ -1,6 +1,8 @@
 # SMACK Learning and Certification Resources
 
-SMACK Stack is the collection of five BigData tools, including Spark, Mesos, Akka, Cassandra and Kafka (all are open source tools). This term was first introduced in 2015 when a group of programmers meet at a conference with the participation of Mesosphere – an US tech company based in San Francisco, developing software for data center based on Apache Mesos- and Mesosphere is also a company that has major contribution to popularize SMACK stack [1].
+SMACK Stack is the collection of five BigData tools, including Spark, Mesos, Akka, Cassandra and Kafka (all are open source tools). This term was first introduced in 2015 when a group of programmers meet at a conference with the participation of Mesosphere – an US tech company based in San Francisco, developing software for data center based on Apache Mesos- and Mesosphere is also a company that has major contribution to popularize SMACK stack.
+
+![Image](https://www.voltlines.com/wp-content/uploads/2020/03/smack.png)
 
 The aim of SMACK stack is to create an ideal enviroment with necessary tools and features for handling Big data (apart from batch-processsing, SMACK Stack has more focus on real-time processing). At present, SMACK stack is widely used in many Big data processing model, especially data streaming processing.
 
