@@ -1,5 +1,7 @@
 # Cassandra Learning and Certification Resources
 
+![Image](https://miro.medium.com/max/2000/1*vTDorVt6ZWOK9gpAzt41Jg.png)
+
 ## File Structure
 
 1. ``DS201 Exercies.md``: Contains all excersie solution of Cassandra Developer Path
