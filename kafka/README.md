@@ -20,6 +20,7 @@
 + [Apache Kafka Series - Kafka Connect Hands-on Learning](https://learning.oreilly.com/videos/apache-kafka-series/9781789344738/continue)
 + [Apache Kafka Series - Learn Apache Kafka for Beginners v2](https://www.udemy.com/course/apache-kafka/)
 + [CCDAK Confluent Certified Developer for Apache Kafka TESTS](https://www.udemy.com/course/confluent-certified-developer-for-apache-kafka/)
++ [Apache Kafka: LiveLessons](https://learning.oreilly.com/videos/apache-kafka-fundamentals/9780134833682/continue)
 
 
 ### Books
