@@ -64,4 +64,7 @@ The way Lambda Architecture work can be summarized into following five steps
 
 For more detail on Lambda Architecture: [Click Here](http://lambda-architecture.net/)
 
+## Distributed Systems
 
++ [Distributed Systems in One Lesson](https://learning.oreilly.com/videos/distributed-systems-in/9781491924914/9781491924914-video215270)
++ [Distributed Systems](https://learning.oreilly.com/videos/the-distributed-systems/9781491968383/9781491968383-video248966)
