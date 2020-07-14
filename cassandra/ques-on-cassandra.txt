@@ -491,5 +491,94 @@
       c. WARN
       d. ERROR
 
+***************************** SET-5 *********************************************
 
+1. Which is NOT a consideration when determining cluster sizing?  Choose one.
+      a. Throughput
+      b. Growth Rate
+      c. Schema ``
+      d. Latency
 
+2. GB/S would be a measure of? Choose one.
+      a. Cluster size
+      b. Throughput ``
+      c. Response Time
+      d. Read/write ratio
+
+3. You can use Cassandra-stress to do which of the following?  Choose one.
+      a. Determine schema performance
+      b. Understand how your database will scale
+      c. Optimize your data model and settings
+      d. Determine production capacity
+      e. All of the above 
+      
+4. Whic is NOT a section of the YAML file used to configure cassandra-stress? Choose one
+      a. Schema description
+      b. Column descriptions
+      c. Batch descriptions
+      d. Query descriptions
+      e. None of the Above ``
+ 
+5. When using the top command on a Cassandra cluster, you should expect the Cassandra process to share the processor equally with other processes on the node.
+      a. True
+      b. False ``
+      
+6. The CPU Wait measurement should be high to indicate you have plenty of CPU resources.
+      a. True
+      b. False ``
+      
+7. The PID column of the top output indicates? Choose one.
+      a. Processes In Disk
+      b. Process Identifier ``
+      c. Permanent Indigestion
+      d. Process Is a Dog
+
+8. For the linux dstat command, which of the ollowing does the -am option five?
+      a. Stats from midnight until noon
+      b. All the default stats plus memory ``
+      c. Angry mob statistics
+      d. Access management rights
+
+9. The linux dstat command helps you make sure your linux cluster is not paging.
+      a. True ``
+      b. False
+
+10. Which of the following is NOT shown with the default dstat command?  Choose one.
+      a. CPU
+      b. Disk I/O
+      c. Network
+      d. Process up time ``
+
+11. The dstat command shows disk utilization for a single process
+      a. True
+      b. False ``
+      
+12. Which of the following is NOT a nodetool sub-command?  Choose one.
+      a. compactionhostory
+      b. gcstats
+      c. nodeinfo ``
+      d. gossipinfo
+
+13. To figure out the name of a node’s datacenter and rack, which nodetool sub-command should you use?  Choose one.
+      a. info ``
+      b. configinfo
+      c. gcstats
+      d. ring
+
+14. Which of the following is true about nodetool gcstats sub-command output?  Choose one.
+      a. High GC times are good because that means that garbage collection is reclaiming lots of memory.
+      b. The reported stats are collected since the process first started running.
+      c. Low GC times are desirable so Cassandra can spend more time servicing requests.``
+      d. GC times are overrated and should be generally ignored.
+
+15. nodetool gossipinfo helps you see the schema information. This is useful because?  Choose one.
+      a. You can verify that each node has its own unique schema.
+      b. You can determine your schema response time with gossipinfo. ``
+      c. You can verify that all nodes have the same schema.
+      d. You can determine the amount of denormalization.
+ 
+16. Which of the following is NOT true about nodetool tablehistograms?  Choose one.
+      a. Provides statistics about a specific table
+      b. Table focused command
+      c. You can use this command to understand latencies
+      d. A short version of the command is nodetool coffeetablehistograms ``
