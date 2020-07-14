@@ -667,10 +667,145 @@ Configuring Clusters, Cluster Sizing, Cassandra-STress, Linux Top Command, Linux
 Leveled Compaction, Sized Tiered Compaction, Time Window Compaction, Repair, Nodesync, sstablesplit, Multi-DC Concepts, CQL Copy, sstabledump, sstableloader, SPark for Data Loading, DSE DSBulk, Backup FUndamentals, JVM Settings, Garbage COllections, Heap Dump, Tuning The Kernel, Hardware Selections, Cloud, Security Considerations, OpsCenter and Lifecycle
 
 
+### Configuring Clusters : YAML
+Cassandra.yaml - the main configuration file
 
++ Cassandra nodes read this file on start-up
+    + Remember, restart the node for the changes to take effect!
+    
++ Located in the following directories:
+    + Cassandra package installations: /etc/dse/cassandra
+    + Cassandra targball installations:
+        + <INSTALL_LOCATION>/resources/cassandra/conf
 
++ cluster_name (Default: "Test Cluster")
++ listen_address (Default: localhost)
++ native_transport_address (Default: localhost)
++ seeds (Default: "127.0.0.1")
 
+#### Commonly Used YAML Settings
+Here are some of the commonly used configuration settings
 
++ endpoint_snitch (Default: SimpleSnitch)
++ initial_token (Default: disable) num_token (Default: 256)
++ commitlog_directories (Default: /var/lib/cassandra/commitlog)
++ data_file_directories (Default: /var/lib/cassandra/data)
++ hints_directory (Default: /var/lib/cassandra/hints)
++ saved_caches_directory (Default: /var/lib/cassandra/saved_caches)
 
+#### Notable YAML Settings
+
++ hinted_handoff_enabled (Default: true)
++ max_hint_window_in_ms (Default: 10800000 milliseconds [3 hours])
++ row_cache_size_in_mb (Default: 0 - disabled)
++ file_cache_size_in_mb (Default: 4096 - disabled)
++ memtable_heap_space_in_mb/memtable_offheap_space_in_mb (Default: 2048 - disabled)
+
+### Cluster Sizing
+This is an estimation process
+
++ Estimates are only a rough-order of magnitude due to metadata
++ Things to consider when estimating clutser size:
+    + Throughput - How much data per second?
+    + Growth Rate - How fast does capacity increase?
+    + Latency - How quickly must the cluster respond?
+    
+#### Throughput
+
++ Measure throughput in data movement per time period (e.g., GB/S)
++ Consider reading and writing separately
++ A function of:
+    + Operation generators (e.g., users)
+    + Rate of operation generation (e.g., 3 clicks per minute)
+    + Size of the operations (number of rows X row width)
+    + Operation mix (read/write ratio)
+
+Example: Write Throughput from Posting Comments to KillrVideo
+
++ 2 million Users
++ Each user comments 5 times/day
++ Yields ~100 comments/second = (2M*5) / (24 * 60 * 60)
++ Each comment inserts 1 row
++ Each row is ~1,000 bytes
++ Result is wiritng 100KB/S = 100 * 1,000
+    
+#### Growth Rate
+
++ How big must the cluster be just to hold the data?
++ Given the write throughput, we can calculate growth
+    + What is the new/update ratio?
+    + What is the replication factor?
+    + Additional headroom for operations
++ Throughput assumptions:
+    + 100KB/S write throughput
+    + 20% write updates
+    + Yields effective growth of 80KB/S = 100KB/S * (1 - .2)
+
+#### Latency
+
++ Calculating cluster capacity is not enough
++ Understanding your SLAs
+    + In terms of latency
+    + In terms of throughput
++ Relevant Factors:
+    + IO Rate
+    + Workload shape
+    + Access patterns
+    + Table width
+    + Node profile (i.e., cores, memory, storage, netowrk)
++ Improve estimates with benchmarking
+
+### Cassandra-Stress
+Stress-testing utility for benchmarking/load testing a cluster
+
++ Simulates a user-defined workload
++ Use the cassandra-stress to:
+    + Determine schema performance
+    + Understand how your database scales
+    + Optimize your data model and settings
+    + Determine production capacity
++ Try out your database before you go into production
+
+#### Cassandra-stress
+Use YAML to configure cassandra-stress
+
++ The YAML file lets you:
+    + Define your schema
+    + Specify any compaction strategy
+    + Create a characteristics workload
+    + Without writing a custom tool
+
++ The YAML file is split into a few sections:
+    + Schema Descritpion - defines the keyspace
+    + Column Descriptions - outlines how to create the simulated data
+    + Batch Descriptions - define the data insertion pattern
+    + Query Descriptions - define the possible queries for test performs
+
+#### Schema Description
+
++ Defines the keyspace and table information
++ If the shcmea is not yet defined the test will create it
++ If the schema already exists, only defines the keyspace and table names
+
+```python
+# Keyspace Name
+keyspace: stresscql
+
+# The CQL for creating a keyspcae (optional if it already exists)
+keyspace_definition:
+    CREATE KEYSPACE stresscql WITH replication = {'class': 'SimpleStrategy', replication_factor': 1};
+
+# Table name
+table: blogposts
+
+# The CQL for creating a table you wish to stress (optional if it already exists)
+table_definition:
+    CREATE TABLE blogposts (
+        domain text, published_date timeuuid, url text, author text, title text, body text,
+        PRIMARY KEY(domain, published_date))
+        WITH CLUSTERING ORDER BY (published_date DESC) AND
+        compaction = {'class':'LeveledCompactionSTrategy'} AND
+        comment='A table to hold blog posts'
+```
 
 **************************************** THE END *****************************************************************
