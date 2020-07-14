@@ -97,3 +97,22 @@
 33. d. 32
 34. c. LocalStartegy
 35. a. INFO
+
+************************************** SET-5 *************************************************
+
+1.  c. Schema
+2.  b. Throughput
+3.  e. All of the above 
+4.  e. None of the Above
+5.  b. False
+6.  b. False
+7.  b. Process Identifier
+8.  b. All the default stats plus memory
+9.  a. True
+10. d. Process up time
+11. b. False
+12. c. nodeinfo
+13. a. info
+14. c. Low GC times are desirable so Cassandra can spend more time servicing requests
+15. b. You can determine your schema response time with gossipinfo.
+16. d. A short version of the command is nodetool coffeetablehistograms
